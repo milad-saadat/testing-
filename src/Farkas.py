@@ -14,7 +14,7 @@ class Farkas:
         new_var = Solver.get_variable_polynomial(self.variables, 'lambda0', 'generated_for_Farkas')
         polynomial_of_sum = new_var
 
-        sum_of_strict = Polynomial(self.RHS.polynomial.variables, [])
+        sum_of_strict = Polynomial(self.variables, [])
 
         constraints = [CoefficientConstraint(new_var.monomials[0].coefficient, '>=')]
 
@@ -25,9 +25,9 @@ class Farkas:
             if left_constraint.is_strict():
                 sum_of_strict = sum_of_strict + new_var_poly
 
-
             polynomial_of_sum = polynomial_of_sum + (new_var_poly * left_poly)
             constraints.append(CoefficientConstraint(new_var_poly.monomials[0].coefficient, '>='))
+
         if need_strict:
             constraints.append(CoefficientConstraint(sum_of_strict.monomials[0].coefficient, '>'))
         return polynomial_of_sum, constraints
@@ -38,7 +38,7 @@ class Farkas:
 
     def get_UNSAT_constraint(self, need_strict=False):
         if need_strict:
-            polynomial_of_sum, sum_of_strict, constraints = self.get_poly_sum(need_strict)
+            polynomial_of_sum, constraints = self.get_poly_sum(need_strict)
             return Solver.find_equality_constrain(polynomial_of_sum,
                                                   Polynomial(polynomial_of_sum.variables, [])) + constraints
         polynomial_of_sum, constraints = self.get_poly_sum()

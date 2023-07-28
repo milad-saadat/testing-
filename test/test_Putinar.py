@@ -68,8 +68,8 @@ class MyTestCase(unittest.TestCase):
 
     def test_get_template(self):
         UnknownVariable.new_id = 0
-        convert_string_to_set_of_variables('declare vars c1 c2 c3 c4')
-        convert_string_to_set_of_variables('declare vars x y')
+        convert_string_to_set_of_variables('declare template vars c1 c2 c3 c4')
+        convert_string_to_set_of_variables('declare program vars x y')
 
         poly1 = convert_string_to_polynomial(
             '(1*c1)*x^1*y^0')
@@ -99,8 +99,8 @@ class MyTestCase(unittest.TestCase):
 
     def test_get_UNSAT_constraint_for_strict(self):
         UnknownVariable.new_id = 0
-        convert_string_to_set_of_variables('declare vars c1 c2 c3 c4')
-        convert_string_to_set_of_variables('declare vars x y')
+        convert_string_to_set_of_variables('declare template vars c1 c2 c3 c4')
+        convert_string_to_set_of_variables('declare program vars x y')
 
         poly1 = convert_string_to_polynomial(
             '(1*c1)*x^1*y^0')

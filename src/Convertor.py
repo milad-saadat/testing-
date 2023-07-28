@@ -38,7 +38,10 @@ def traverse(parse_tree, all_variables):
         if len(parse_tree.children) == 1:
             return traverse(parse_tree.children[0], all_variables)
         elif parse_tree.children[0] == '-':
-            return - traverse(parse_tree.children[1], all_variables)
+            return -traverse(parse_tree.children[1], all_variables)
+        elif parse_tree.children[0] == '+':
+            return traverse(parse_tree.children[1], all_variables)
+
     elif parse_tree.data == 'primary':
         if not parse_tree.children[0].__class__ is lark.Token:
             return traverse(parse_tree.children[0], all_variables)

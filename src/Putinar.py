@@ -9,10 +9,15 @@ import numpy as np
 
 
 class Putinar:
-    def __init__(self, variables, LHS: [PolynomialConstraint], RHS: PolynomialConstraint):
+    def __init__(self, variables, LHS: [PolynomialConstraint], RHS: PolynomialConstraint,
+                 max_d_for_sat=0, max_d_for_unsat=0, max_d_for_unsat_strict=0, max_d_for_new_var=0):
         self.variables = variables
         self.RHS = RHS
         self.LHS = LHS
+        self.max_d_for_sat = max_d_for_sat
+        self.max_d_for_unsat = max_d_for_unsat
+        self.max_d_for_unsat_strict = max_d_for_unsat_strict
+        self.max_d_for_new_var = max_d_for_new_var
 
     def get_lower_triangular_matrix(self, dim):
         matrix = np.array(
@@ -67,14 +72,14 @@ class Putinar:
 
         return polynomial_of_sum, all_constraints
 
-    def get_SAT_constraint(self, max_d):
-        polynomial_of_sum, constraints = self.get_poly_sum(max_d)
+    def get_SAT_constraint(self):
+        polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_sat)
         return constraints + Solver.find_equality_constrain(polynomial_of_sum, self.RHS.polynomial)
 
-    def get_UNSAT_constraint(self, max_d, need_strict=False, power_of_new_var=0):
+    def get_UNSAT_constraint(self, need_strict=False):
         if need_strict:
-            return self.handel_strict(max_d, power_of_new_var)
-        polynomial_of_sum, constraints = self.get_poly_sum(max_d)
+            return self.handel_strict(self.max_d_for_unsat_strict, self.max_d_for_new_var)
+        polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_unsat)
         return constraints + Solver.find_equality_constrain(polynomial_of_sum,
                                                             Solver.get_constant_polynomial(
                                                                 self.RHS.polynomial.variables, '-1'))

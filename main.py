@@ -14,6 +14,9 @@ from src.Constraint import CoefficientConstraint
 import os
 from src.Convertor import *
 import subprocess
+from src.Model import *
+
+
 
 if __name__ == '__main__':
     # a = UnknownVariable('a')
@@ -142,9 +145,12 @@ if __name__ == '__main__':
     # output = subprocess.getoutput("./solver/z3 checking.txt")
     # print('salam ' + output)
     # Solver.core_iteration(all_constraint)
+    # convert_string_to_set_of_variables('declare program vars x y')
+    # print(convert_general_string_to_poly('x+--+y' , SetOfVariables.all_declared_var, SetOfVariables.program_declared_var))
+    model = Model()
+    model.declare_variables(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'])
+    model.declare_variables(['x'], False)
 
-    convert_string_to_set_of_variables('declare template vars c_0 c_1 c_2 c_3 s_0 s_1 s_2 s_3')
-    convert_string_to_set_of_variables('declare program vars x')
     f = open("test.txt", "r")
     input = f.read().split('\n')
     i = 0
@@ -173,30 +179,7 @@ if __name__ == '__main__':
             )
             , '>=')
         i += 2
-        for cons in lhs:
-            print(cons)
-        print('====>   ', rhs)
-        print('--------cons---------')
-        putinar = Putinar(SetOfVariables.program_declared_var, lhs, rhs)
-        new_cons = putinar.get_SAT_constraint(0)
-        for con in new_cons:
-            print('new_con : ' + str(con))
-        print('-----------------')
-        all_constraint = all_constraint + new_cons
-
-    # Solver.core_iteration(all_constraint)
-    f = open("checking.txt", "w")
-    option = '(set-option :print-success false)\n'+\
-             '(set-option :produce-unsat-cores true)\n'+\
-             '(set-option :produce-models true)'
-    f.write(option+Solver.smt_declare_variable_phase(all_constraint) + '\n' +
-            Solver.convert_constraints_to_smt_format(all_constraint) + '\n (check-sat)\n(get-model)')
-    f.close()
-    os.system('./solver/z3 checking.txt')
-    # output = subprocess.getoutput("./solver/z3 checking.txt")
-    # print('salam ' + output)
+        model.add_paired_constraint(lhs, rhs)
 
 
-
-
-
+    model.run_on_solver('putinar', solver_path='./solver/z3', max_d_of_SAT=0)

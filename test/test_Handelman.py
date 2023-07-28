@@ -8,7 +8,7 @@ from src.Solver import *
 class MyTestCase(unittest.TestCase):
     def test_SAT_Handelman(self):
         # example of second article
-        convert_string_to_set_of_variables('declare vars x ')
+        convert_string_to_set_of_variables('declare program vars x ')
         poly1 = convert_string_to_polynomial(
             '(1)*x^0 + (-1)*x^1')
         poly2 = convert_string_to_polynomial(
@@ -41,3 +41,11 @@ class MyTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+# '1*y0+1*lambda1+1*lambda2+1*lambda3+1*lambda4+1*lambda5+1*lambda6=0\n'
+#  '-1*lambda2+-2*lambda3+1*lambda4+0*lambda5+2*lambda6=0\n'
+#  '-1+1*lambda3+-1*lambda5+1*lambda6=0\n'
+#  '1*y0>0\n'
+#
+# '1*lambda1+1*lambda2+1*lambda3+1*lambda4+1*lambda5+1*lambda6=0\n'
+#  '-1*lambda2+-2*lambda3+1*lambda4+0*lambda5+2*lambda6=0\n'
+#  '-1+1*lambda3+-1*lambda5+1*lambda6=0\n'
