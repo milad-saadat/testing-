@@ -69,6 +69,11 @@ class Handelman:
         return Solver.find_equality_constrain(polynomial_of_sum, self.RHS.polynomial) + constraints
 
     def get_UNSAT_constraint(self, need_strict=False):
+        if need_strict:
+            polynomial_of_sum, constraints = self.get_poly_sum(need_strict)
+            return Solver.find_equality_constrain(polynomial_of_sum,
+                                                  Polynomial(polynomial_of_sum.variables, [])) + constraints
+
         polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_unsat)
         return Solver.find_equality_constrain(polynomial_of_sum,
                                               Solver.get_constant_polynomial(self.variables, '-1')) + constraints
