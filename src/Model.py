@@ -5,6 +5,7 @@ from src.Parser import *
 from src.Farkas import *
 from src.Handelman import *
 from src.Putinar import *
+from src.Constant import *
 
 
 class Model:
@@ -54,17 +55,18 @@ class Model:
 
         return all_constraint
 
-    def run_on_solver(self, model_name, solver_path='solver/z3', core_iteration_heuristic=False,
+    def run_on_solver(self, model_name, solver_name='z3', solver_path=None, core_iteration_heuristic=False,
                       constant_heuristic=False,
                       get_SAT=True, get_UNSAT=False, get_strict=False, max_d_of_SAT=0,
-                      max_d_of_UNSAT=0, max_d_of_strict=0, degree_of_generated_var=0):
+                      max_d_of_UNSAT=0, max_d_of_strict=0, degree_of_generated_var=0, real_values=True):
 
         all_constraint = self.get_constraints(model_name,
                                               get_SAT=get_SAT, get_UNSAT=get_UNSAT, get_strict=get_strict,
                                               max_d_of_SAT=max_d_of_SAT, max_d_of_UNSAT=max_d_of_UNSAT,
                                               max_d_of_strict=max_d_of_strict,
                                               degree_of_generated_var=degree_of_generated_var)
-
+        if solver_path is None:
+            solver_path = Constant.default_path[solver_name]
         for set_of_constraint in all_constraint:
             if len(set_of_constraint) > 0:
                 f = open("checking.txt", "w")
@@ -73,21 +75,18 @@ class Model:
                     for var, amount in constant_variable:
                         print(var, ' = ', amount)
                 if core_iteration_heuristic:
-                    set_of_constraint = Model.core_iteration(set_of_constraint, solver_path)
-                option = '(set-option :print-success false)\n' + \
-                         '(set-option :produce-models true)\n'
+                    set_of_constraint = Model.core_iteration(set_of_constraint, solver_path, real_values)
+                solver_option = Constant.options[solver_name]
 
                 names = ' '.join([str(var) for var in SetOfVariables.template_declared_var])
                 output_command = '\n(check-sat)\n' + \
                                  f'(get-value({names}))\n'
 
-                # output_command =    '\n(check-sat)\n' + \
-                #                     '(get-model)'
-                f.write(option + Solver.smt_declare_variable_phase(set_of_constraint) + '\n' +
+                f.write(solver_option + Solver.smt_declare_variable_phase(set_of_constraint, real_values) + '\n' +
                         Solver.convert_constraints_to_smt_format(set_of_constraint) + output_command
                         )
                 f.close()
-                output = subprocess.getoutput(f'{solver_path} checking.txt')
+                output = subprocess.getoutput(f'{solver_path} {Constant.command[solver_name]} checking.txt')
                 print(output)
 
     @staticmethod
@@ -128,7 +127,7 @@ class Model:
 
     @staticmethod
     def core_iteration(all_constraint, solver_path='./solver/z3',
-                       saving_path='save_for_core_iteration_heuristic_temp.txt'):
+                       saving_path='save_for_core_iteration_heuristic_temp.txt', real_values=True):
         template_variables = SetOfVariables.template_declared_var[:]
         unsat = True
         while unsat and len(template_variables) > 0:
@@ -139,21 +138,26 @@ class Model:
                 new_name.append('cons-' + var.name)
 
             input_of_solver = '(set-option :produce-unsat-cores true)\n'
-            input_of_solver += (Solver.smt_declare_variable_phase(all_constraint))
+            input_of_solver += (Solver.smt_declare_variable_phase(all_constraint, real_values))
             input_of_solver += (Solver.convert_constraints_to_smt_format(generated_constraint, new_name))
             input_of_solver += (Solver.convert_constraints_to_smt_format(all_constraint))
             input_of_solver += '\n(check-sat)\n(get-unsat-core)\n'
             f = open(saving_path, "w")
             f.write(input_of_solver)
             f.close()
+
             output = subprocess.getoutput(f"{solver_path} {saving_path}")
 
-            sat, core = output.split('\n')
+            sat = output.split()[0]
+            core = output.replace('(', ' ').replace(')', ' ').split()[1:]
+
             os.remove(saving_path)
             if sat == 'sat':
                 return generated_constraint + all_constraint
-
-            for name in core[1:-1].split(' '):
+            print(sat)
+            print(core)
+            for name in core:
+                name = name.strip()
                 var = UnknownVariable.get_variable_by_name(name.strip()[5:])
                 template_variables.remove(var)
         return all_constraint

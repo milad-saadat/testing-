@@ -15,7 +15,7 @@ import os
 from src.Convertor import *
 import subprocess
 from src.Model import *
-
+from src.gurobi import *
 
 
 if __name__ == '__main__':
@@ -182,4 +182,12 @@ if __name__ == '__main__':
         model.add_paired_constraint(lhs, rhs)
 
 
-    model.run_on_solver('putinar', solver_path='./solver/z3', max_d_of_SAT=0)
+    # conss = model.get_constraints('farkas')[0]
+    # for con in conss:
+    #     print(con)
+    #
+    # print('--------------------')
+    # check_constraints(conss)
+    # # print(model.get_constraints('farkas'))
+
+    model.run_on_solver(model_name='farkas', solver_name='mathsat', real_values=False)

@@ -1,12 +1,4 @@
-import os
-import subprocess
-
-from src.Polynomial import Polynomial
-from src.Polynomial import Monomial
-from src.Coefficient import Coefficient
-from src.Coefficient import Element
 from src.Constraint import CoefficientConstraint
-from src.UnknownVariable import UnknownVariable
 from src.Parser import *
 
 class Solver:
@@ -74,7 +66,7 @@ class Solver:
         return smt_string
 
     @staticmethod
-    def smt_declare_variable_phase(all_constraint):
+    def smt_declare_variable_phase(all_constraint, real=True):
         all_variables_ids = set()
         for constraint in all_constraint:
             for element in constraint.coefficient.elements:
@@ -83,9 +75,11 @@ class Solver:
         smt_string = ''
 
         for var_id in all_variables_ids:
-            # smt_string = smt_string + f'(declare-const {var}_num Int)\n'
-            # smt_string = smt_string + f'(declare-const {var}_den Int)\n'
-            smt_string = smt_string + f'(declare-const {UnknownVariable.get_variable_by_id(var_id)} Real)\n'
+            if real:
+                smt_string = smt_string + f'(declare-const {UnknownVariable.get_variable_by_id(var_id)} Real)\n'
+            else:
+                smt_string = smt_string + f'(declare-const {UnknownVariable.get_variable_by_id(var_id)} Int)\n'
+
         return smt_string
 
 
