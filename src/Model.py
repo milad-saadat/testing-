@@ -6,18 +6,18 @@ from src.Farkas import *
 from src.Handelman import *
 from src.Putinar import *
 from src.Constant import *
-
+from src.UnknownVariable import UnknownVariable
 
 class Model:
 
-    def __init__(self):
+    def __init__(self, template_variables, program_variables):
         self.paired_constraint = []
-
-    def declare_variables(self, names, template=True):
-        if template:
-            convert_string_to_set_of_variables('declare template vars ' + ' '.join(names))
-        else:
-            convert_string_to_set_of_variables('declare program vars ' + ' '.join(names))
+        self.template_variables = []
+        self.program_variables = []
+        for name in template_variables:
+            self.template_variables.append(UnknownVariable(name=name, typ='template_var'))
+        for name in program_variables:
+            self.program_variables.append(UnknownVariable(name=name, typ='program_var'))
 
     def add_paired_constraint(self, lhs, rhs):
         self.paired_constraint.append((lhs, rhs))
@@ -37,12 +37,12 @@ class Model:
         all_constraint = [[], [], []]
         for pair in self.paired_constraint:
             if model_name == 'farkas':
-                model = Farkas(SetOfVariables.program_declared_var, LHS=pair[0], RHS=pair[1])
+                model = Farkas(self.program_variables, LHS=pair[0], RHS=pair[1])
             elif model_name == 'handelman':
-                model = Handelman(SetOfVariables.program_declared_var, LHS=pair[0], RHS=pair[1],
+                model = Handelman(self.program_variables, LHS=pair[0], RHS=pair[1],
                                   max_d_for_sat=max_d_of_SAT, max_d_for_unsat=max_d_of_UNSAT)
             elif model_name == 'putinar':
-                model = Putinar(SetOfVariables.program_declared_var, LHS=pair[0], RHS=pair[1],
+                model = Putinar(self.program_variables, LHS=pair[0], RHS=pair[1],
                                 max_d_for_sat=max_d_of_SAT, max_d_for_unsat=max_d_of_UNSAT,
                                 max_d_for_unsat_strict=max_d_of_strict, max_d_for_new_var=degree_of_generated_var)
 
@@ -78,7 +78,7 @@ class Model:
                     set_of_constraint = Model.core_iteration(set_of_constraint, solver_path, real_values)
                 solver_option = Constant.options[solver_name]
 
-                names = ' '.join([str(var) for var in SetOfVariables.template_declared_var])
+                names = ' '.join([str(var) for var in self.template_variables])
                 output_command = '\n(check-sat)\n' + \
                                  f'(get-value({names}))\n'
 

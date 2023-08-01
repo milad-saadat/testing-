@@ -23,7 +23,6 @@ class UnknownVariable:
         self.name = name
         self.type = typ
         self.id = UnknownVariable.get_new_id()
-        # if name is not None:
         UnknownVariable.dict_from_name_to_variable[name] = self
         UnknownVariable.all_variables.append(self)
 

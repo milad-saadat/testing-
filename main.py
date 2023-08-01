@@ -147,9 +147,8 @@ if __name__ == '__main__':
     # Solver.core_iteration(all_constraint)
     # convert_string_to_set_of_variables('declare program vars x y')
     # print(convert_general_string_to_poly('x+--+y' , SetOfVariables.all_declared_var, SetOfVariables.program_declared_var))
-    model = Model()
-    model.declare_variables(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'])
-    model.declare_variables(['x'], False)
+    model = Model(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'], ['x'])
+
 
     f = open("test.txt", "r")
     input = f.read().split('\n')
@@ -165,8 +164,8 @@ if __name__ == '__main__':
             lhs.append(PolynomialConstraint(
                 convert_general_string_to_poly(
                     (input[k][input[k].find(':') + 1:]),
-                    SetOfVariables.all_declared_var,
-                    SetOfVariables.program_declared_var
+                    model.template_variables + model.program_variables,
+                    model.program_variables
                 )
                 , '>=')
             )
@@ -174,8 +173,8 @@ if __name__ == '__main__':
         rhs = PolynomialConstraint(
             convert_general_string_to_poly(
                 (input[i]),
-                SetOfVariables.all_declared_var,
-                SetOfVariables.program_declared_var
+                model.template_variables + model.program_variables,
+                model.program_variables
             )
             , '>=')
         i += 2
