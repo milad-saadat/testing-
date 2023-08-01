@@ -6,6 +6,12 @@ class PolynomialConstraint:
     def __init__(self, polynomial: Polynomial, sign: str):
         self.polynomial = polynomial
         self.sign = sign
+        if sign == '<':
+            self.sign = '>'
+            self.polynomial = -self.polynomial
+        if sign == '<=':
+            self.sign = '>='
+            self.polynomial = -self.polynomial
 
     def __str__(self):
         return str(self.polynomial) + self.sign + "0"
@@ -13,6 +19,15 @@ class PolynomialConstraint:
     def is_strict(self):
         return self.sign == '>'
 
+    def __neg__(self):
+        if self.sign == '>':
+            return PolynomialConstraint(-self.polynomial, '>=')
+        elif self.sign == '>=':
+            return PolynomialConstraint(-self.polynomial, '>')
+        elif self.sign == '=':
+            return PolynomialConstraint(self.polynomial, '!=')
+        elif self.sign == '!=':
+            return PolynomialConstraint(self.polynomial, '=')
 
 class CoefficientConstraint:
     def __init__(self, coefficient: Coefficient, sign: str):

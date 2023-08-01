@@ -1,12 +1,15 @@
 import os
 import subprocess
 
-from src.Parser import *
 from src.Farkas import *
 from src.Handelman import *
 from src.Putinar import *
 from src.Constant import *
 from src.UnknownVariable import UnknownVariable
+from src.Convertor import *
+from src.DNF import *
+from src.Coefficient import *
+
 
 class Model:
 
@@ -19,8 +22,13 @@ class Model:
         for name in program_variables:
             self.program_variables.append(UnknownVariable(name=name, typ='program_var'))
 
-    def add_paired_constraint(self, lhs, rhs):
-        self.paired_constraint.append((lhs, rhs))
+    def add_paired_constraint(self, lhs: DNF, rhs: DNF):
+        if len(rhs.literals) > 1:
+            lhs = lhs & (-(DNF(rhs.literals[1:])))
+            rhs = DNF([rhs.literals[0]])
+        for literal in lhs.literals:
+            for item in rhs.literals[0]:
+                self.paired_constraint.append((literal, item))
 
     def __str__(self):
         res = ''
@@ -31,6 +39,10 @@ class Model:
             res += str(pair[1]) + '\n'
             res += '----------------------\n'
         return res
+
+    def get_polynomial(self, poly_str):
+        return convert_general_string_to_poly(poly_str, self.template_variables + self.program_variables,
+                                              self.program_variables)
 
     def get_constraints(self, model_name, get_SAT=True, get_UNSAT=False, get_strict=False, max_d_of_SAT=0,
                         max_d_of_UNSAT=0, max_d_of_strict=0, degree_of_generated_var=0):
@@ -65,6 +77,15 @@ class Model:
                                               max_d_of_SAT=max_d_of_SAT, max_d_of_UNSAT=max_d_of_UNSAT,
                                               max_d_of_strict=max_d_of_strict,
                                               degree_of_generated_var=degree_of_generated_var)
+        all_constraint[0].append(
+            CoefficientConstraint(
+                Coefficient(
+                    [Element(
+                        '1', [UnknownVariable.get_variable_by_name('c_3')]
+                    )]
+                ), '='
+            )
+        )
         if solver_path is None:
             solver_path = Constant.default_path[solver_name]
         for set_of_constraint in all_constraint:
@@ -75,7 +96,8 @@ class Model:
                     for var, amount in constant_variable:
                         print(var, ' = ', amount)
                 if core_iteration_heuristic:
-                    set_of_constraint = Model.core_iteration(set_of_constraint, solver_path, real_values)
+                    set_of_constraint = self.core_iteration(set_of_constraint, solver_path=solver_path,
+                                                            real_values=real_values)
                 solver_option = Constant.options[solver_name]
 
                 names = ' '.join([str(var) for var in self.template_variables])
@@ -90,7 +112,7 @@ class Model:
                 print(output)
 
     @staticmethod
-    def get_equality_constraint(all_constraint: [CoefficientConstraint]) -> CoefficientConstraint:
+    def get_equality_constraint(all_constraint: [CoefficientConstraint]):
         for constraint in all_constraint:
             if constraint.is_equality():
                 return constraint
@@ -100,7 +122,7 @@ class Model:
     def remove_equality_constraints(all_constraint: [CoefficientConstraint]):
         constant_value = []
         while True:
-            equality_constraint = Solver.get_equality_constraint(all_constraint)
+            equality_constraint = Model.get_equality_constraint(all_constraint)
             if equality_constraint is None:
                 break
             variable = None
@@ -118,6 +140,7 @@ class Model:
                     amount = -element1.constant / element2.constant
             constant_value.append((variable, amount))
             all_constraint.remove(equality_constraint)
+            print(variable, amount)
             for constraint in all_constraint:
                 for element in constraint.coefficient.elements:
                     if variable in element.variables:
@@ -125,10 +148,9 @@ class Model:
                         element.constant = element.constant * amount
         return all_constraint, constant_value
 
-    @staticmethod
-    def core_iteration(all_constraint, solver_path='./solver/z3',
+    def core_iteration(self, all_constraint, solver_path='./solver/z3',
                        saving_path='save_for_core_iteration_heuristic_temp.txt', real_values=True):
-        template_variables = SetOfVariables.template_declared_var[:]
+        template_variables = self.template_variables[:]
         unsat = True
         while unsat and len(template_variables) > 0:
             generated_constraint = []
@@ -154,8 +176,7 @@ class Model:
             os.remove(saving_path)
             if sat == 'sat':
                 return generated_constraint + all_constraint
-            print(sat)
-            print(core)
+
             for name in core:
                 name = name.strip()
                 var = UnknownVariable.get_variable_by_name(name.strip()[5:])
