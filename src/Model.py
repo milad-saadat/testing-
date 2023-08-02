@@ -81,7 +81,7 @@ class Model:
             CoefficientConstraint(
                 Coefficient(
                     [Element(
-                        '1', [UnknownVariable.get_variable_by_name('c_3')]
+                        '1', [self.template_variables[3]]
                     )]
                 ), '='
             )
@@ -90,17 +90,24 @@ class Model:
             solver_path = Constant.default_path[solver_name]
         for set_of_constraint in all_constraint:
             if len(set_of_constraint) > 0:
+                values_of_variable = {}
                 f = open("checking.txt", "w")
                 if constant_heuristic:
                     set_of_constraint, constant_variable = Model.remove_equality_constraints(set_of_constraint)
                     for var, amount in constant_variable:
-                        print(var, ' = ', amount)
+                        if var in self.template_variables:
+                            values_of_variable[var] = amount
                 if core_iteration_heuristic:
                     set_of_constraint = self.core_iteration(set_of_constraint, solver_path=solver_path,
                                                             real_values=real_values)
                 solver_option = Constant.options[solver_name]
 
-                names = ' '.join([str(var) for var in self.template_variables])
+                names = ''
+                for var in self.template_variables:
+                    if not (var in values_of_variable.keys()):
+                        names = names + ' ' + str(var)
+
+                names = names.strip()
                 output_command = '\n(check-sat)\n' + \
                                  f'(get-value({names}))\n'
 
@@ -109,8 +116,21 @@ class Model:
                         )
                 f.close()
                 output = subprocess.getoutput(f'{solver_path} {Constant.command[solver_name]} checking.txt')
-                print(output)
+                is_sat = output.split('\n')[0]
+                values = '\n'.join(output.split('\n')[1:])[1:-1].strip()
+                print("here : ", is_sat)
+                for line in values.split('\n'):
+                    line = line.strip()
+                    line = line[1:-1].strip()
+                    var_id = int(line.split(' ')[0].split('_')[-1])
+                    var_value = ' '.join(line.split(' ')[1:])
+                    for temp_var in self.template_variables:
+                        if temp_var.id == var_id:
+                            values_of_variable[temp_var] = var_value
+                            break
 
+                for var in values_of_variable.keys():
+                    print(var , " : ", values_of_variable[var])
     @staticmethod
     def get_equality_constraint(all_constraint: [CoefficientConstraint]):
         for constraint in all_constraint:
@@ -120,7 +140,7 @@ class Model:
 
     @staticmethod
     def remove_equality_constraints(all_constraint: [CoefficientConstraint]):
-        constant_value = []
+        constant_value = {}
         while True:
             equality_constraint = Model.get_equality_constraint(all_constraint)
             if equality_constraint is None:
@@ -138,9 +158,8 @@ class Model:
                 else:
                     variable = element2.variables[0]
                     amount = -element1.constant / element2.constant
-            constant_value.append((variable, amount))
+            constant_value[variable] = amount
             all_constraint.remove(equality_constraint)
-            print(variable, amount)
             for constraint in all_constraint:
                 for element in constraint.coefficient.elements:
                     if variable in element.variables:
@@ -178,7 +197,10 @@ class Model:
                 return generated_constraint + all_constraint
 
             for name in core:
-                name = name.strip()
-                var = UnknownVariable.get_variable_by_name(name.strip()[5:])
-                template_variables.remove(var)
+                name = name.strip()[5:]
+                for var in template_variables:
+                    if var.name == name:
+                        delete_var = var
+                        break
+                template_variables.remove(delete_var)
         return all_constraint

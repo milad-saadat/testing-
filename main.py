@@ -199,4 +199,4 @@ if __name__ == '__main__':
     # check_constraints(conss)
     # # print(model.get_constraints('farkas'))
 
-    model.run_on_solver(model_name='farkas', solver_name='z3', real_values=False, constant_heuristic=True)
+    model.run_on_solver(model_name='farkas', solver_name='mathsat', real_values=True, constant_heuristic=False)

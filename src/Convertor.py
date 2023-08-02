@@ -7,9 +7,8 @@ from src.Polynomial import Monomial
 
 
 def find_index_of_variable(name, all_variable):
-    var = UnknownVariable.get_variable_by_name(name)
     for i in range(len(all_variable)):
-        if var == all_variable[i]:
+        if name == all_variable[i].name:
             return i
     print(f'no such var declared with name : {name}')
     return None

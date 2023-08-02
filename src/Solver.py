@@ -67,18 +67,18 @@ class Solver:
 
     @staticmethod
     def smt_declare_variable_phase(all_constraint, real=True):
-        all_variables_ids = set()
+        all_variables = set()
         for constraint in all_constraint:
             for element in constraint.coefficient.elements:
-                all_variables_ids = all_variables_ids.union(set([var.id for var in element.variables]))
+                all_variables = all_variables.union(set([var for var in element.variables]))
 
         smt_string = ''
 
-        for var_id in all_variables_ids:
+        for var in all_variables:
             if real:
-                smt_string = smt_string + f'(declare-const {UnknownVariable.get_variable_by_id(var_id)} Real)\n'
+                smt_string = smt_string + f'(declare-const {var} Real)\n'
             else:
-                smt_string = smt_string + f'(declare-const {UnknownVariable.get_variable_by_id(var_id)} Int)\n'
+                smt_string = smt_string + f'(declare-const {var} Int)\n'
 
         return smt_string
 
