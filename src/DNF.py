@@ -32,3 +32,14 @@ class DNF:
             res += ' AND '.join([str(item) for item in literal])
             res += '\n'
         return '(\n' + res + ')\n'
+
+    def convert_to_preorder(self):
+        res = '( or '
+        for literal in self.literals:
+            res += '( and '
+            for item in literal:
+                res += item.convert_to_preorder()
+                res += ' '
+            res += ') '
+        res += ' )'
+        return res

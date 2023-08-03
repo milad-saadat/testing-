@@ -1,6 +1,7 @@
 from src.Constraint import CoefficientConstraint
 from src.Parser import *
 
+
 class Solver:
 
     @staticmethod
@@ -55,22 +56,19 @@ class Solver:
                           )
 
     @staticmethod
-    def convert_constraints_to_smt_format(all_constraint: [CoefficientConstraint], names = None):
+    def convert_constraints_to_smt_format(all_constraint: [CoefficientConstraint], names=None):
         smt_string = ''
-        for i,constraint in enumerate(all_constraint):
+        for i, constraint in enumerate(all_constraint):
             if names is None:
                 smt_string = smt_string + f'(assert  {constraint.convert_to_preorder()} )\n'
             else:
                 smt_string = smt_string + f'(assert ( ! {constraint.convert_to_preorder()} :named {names[i]}))\n'
-        smt_string = smt_string
+
         return smt_string
 
     @staticmethod
     def smt_declare_variable_phase(all_constraint, real=True):
-        all_variables = set()
-        for constraint in all_constraint:
-            for element in constraint.coefficient.elements:
-                all_variables = all_variables.union(set([var for var in element.variables]))
+        all_variables = Solver.get_all_variable(all_constraint)
 
         smt_string = ''
 
@@ -82,6 +80,13 @@ class Solver:
 
         return smt_string
 
+    @staticmethod
+    def get_all_variable(all_constraints):
+        all_variables = set()
+        for dnf in all_constraints:
+            for literal in dnf.literals:
+                for constraint in literal:
+                    for element in constraint.coefficient.elements:
+                        all_variables = all_variables.union(set([var for var in element.variables]))
 
-
-
+        return all_variables

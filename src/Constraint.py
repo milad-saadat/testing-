@@ -29,6 +29,7 @@ class PolynomialConstraint:
         elif self.sign == '!=':
             return PolynomialConstraint(self.polynomial, '=')
 
+
 class CoefficientConstraint:
     def __init__(self, coefficient: Coefficient, sign: str):
         self.coefficient = coefficient
@@ -52,7 +53,7 @@ class CoefficientConstraint:
             else:
                 return False
         if len(self.coefficient.elements) == 1:
-            if len(self.coefficient.elements[0].variables)  == 1:
+            if len(self.coefficient.elements[0].variables) == 1:
                 return True
             else:
                 return False

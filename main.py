@@ -149,15 +149,15 @@ if __name__ == '__main__':
     # print(convert_general_string_to_poly('x+--+y' , SetOfVariables.all_declared_var, SetOfVariables.program_declared_var))
     model = Model(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'], ['x'])
 
-    # c1 = PolynomialConstraint(model.get_polynomial('c_1'), '<')
-    # c2 = PolynomialConstraint(model.get_polynomial('c_2'), '>=')
-    # c3 = PolynomialConstraint(model.get_polynomial('c_3'), '>=')
-    # c4 = PolynomialConstraint(model.get_polynomial('s_0'), '>=')
+    # c1 = CoefficientConstraint(model.get_polynomial('c_1-2').monomials[0].coefficient, '<')
+    # c2 = CoefficientConstraint(model.get_polynomial('c_2+1').monomials[0].coefficient, '>=')
+    # c3 = CoefficientConstraint(model.get_polynomial('c_3-c_1').monomials[0].coefficient, '>=')
+    # c4 = CoefficientConstraint(model.get_polynomial('s_0-1').monomials[0].coefficient, '>=')
     #
     # dnf = DNF([[c1], [c3, c4]])
     # dnf2 = DNF([[c3, c2], [c2,c4]])
-    # # print(dnf)
-    # # print(-dnf)
+    # print(dnf.convert_to_preorder())
+    # print(-dnf)
     # model.add_paired_constraint(dnf, dnf2)
     # print(model)
     f = open("test.txt", "r")
@@ -191,7 +191,7 @@ if __name__ == '__main__':
         model.add_paired_constraint(DNF([lhs]), DNF([[rhs]]))
 
 
-    # conss = model.get_constraints('farkas')[0]
+    # conss = model.get_constraints('farkas', get_UNSAT=True)
     # for con in conss:
     #     print(con)
     #
@@ -199,4 +199,5 @@ if __name__ == '__main__':
     # check_constraints(conss)
     # # print(model.get_constraints('farkas'))
 
-    model.run_on_solver(model_name='farkas', solver_name='mathsat', real_values=True, constant_heuristic=False)
+
+    model.run_on_solver(model_name='farkas', solver_name='z3', real_values=True, constant_heuristic=True, core_iteration_heuristic=False)
