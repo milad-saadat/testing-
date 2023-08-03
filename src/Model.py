@@ -12,7 +12,10 @@ from src.Coefficient import *
 
 class Model:
 
-    def __init__(self, template_variables, program_variables):
+    def __init__(self, template_variables, program_variables,
+                 model_name, get_SAT=True, get_UNSAT=False, get_strict=False, max_d_of_SAT=0,
+                 max_d_of_UNSAT=0, max_d_of_strict=0, degree_of_generated_var=0
+                 ):
         self.paired_constraint = []
         self.template_variables = []
         self.program_variables = []
@@ -20,6 +23,15 @@ class Model:
             self.template_variables.append(UnknownVariable(name=name, typ='template_var'))
         for name in program_variables:
             self.program_variables.append(UnknownVariable(name=name, typ='program_var'))
+
+        self.model_name = model_name
+        self.get_SAT = get_SAT
+        self.get_UNSAT = get_UNSAT
+        self.get_strict = get_strict
+        self.max_d_of_SAT = max_d_of_SAT
+        self.max_d_of_UNSAT = max_d_of_UNSAT
+        self.max_d_of_strict = max_d_of_strict
+        self.degree_of_generated_var = degree_of_generated_var
 
     def add_paired_constraint(self, lhs: DNF, rhs: DNF):
         if len(rhs.literals) > 1:
@@ -43,49 +55,43 @@ class Model:
         return convert_general_string_to_poly(poly_str, self.template_variables + self.program_variables,
                                               self.program_variables)
 
-    def get_constraints(self, model_name, get_SAT=True, get_UNSAT=False, get_strict=False, max_d_of_SAT=0,
-                        max_d_of_UNSAT=0, max_d_of_strict=0, degree_of_generated_var=0):
+    def get_constraints(self):
         all_constraint = []
         for pair in self.paired_constraint:
-            if model_name == 'farkas':
+            if self.model_name == 'farkas':
                 model = Farkas(self.program_variables, LHS=pair[0], RHS=pair[1])
-            elif model_name == 'handelman':
+            elif self.model_name == 'handelman':
                 model = Handelman(self.program_variables, LHS=pair[0], RHS=pair[1],
-                                  max_d_for_sat=max_d_of_SAT, max_d_for_unsat=max_d_of_UNSAT)
-            elif model_name == 'putinar':
+                                  max_d_for_sat=self.max_d_of_SAT, max_d_for_unsat=self.max_d_of_UNSAT)
+            elif self.model_name == 'putinar':
                 model = Putinar(self.program_variables, LHS=pair[0], RHS=pair[1],
-                                max_d_for_sat=max_d_of_SAT, max_d_for_unsat=max_d_of_UNSAT,
-                                max_d_for_unsat_strict=max_d_of_strict, max_d_for_new_var=degree_of_generated_var)
+                                max_d_for_sat=self.max_d_of_SAT, max_d_for_unsat=self.max_d_of_UNSAT,
+                                max_d_for_unsat_strict=self.max_d_of_strict, max_d_for_new_var=self.degree_of_generated_var)
             else:
                 print("no such model")
                 return
             new_dnf = []
-            if get_SAT:
+            if self.get_SAT:
                 new_dnf.append(model.get_SAT_constraint())
-            if get_UNSAT:
+            if self.get_UNSAT:
                 new_dnf.append(model.get_UNSAT_constraint(need_strict=False))
-            if get_strict:
+            if self.get_strict:
                 new_dnf.append(model.get_UNSAT_constraint(need_strict=True))
             all_constraint.append(DNF(new_dnf))
 
         return all_constraint
 
-    def run_on_solver(self, model_name, solver_name='z3', solver_path=None, core_iteration_heuristic=False,
-                      constant_heuristic=False,
-                      get_SAT=True, get_UNSAT=False, get_strict=False, max_d_of_SAT=0,
-                      max_d_of_UNSAT=0, max_d_of_strict=0, degree_of_generated_var=0, real_values=True):
+    def run_on_solver(self, solver_name='z3', solver_path=None, core_iteration_heuristic=False,
+                      constant_heuristic=False, real_values=True
+                      ):
 
-        all_constraint = self.get_constraints(model_name,
-                                              get_SAT=get_SAT, get_UNSAT=get_UNSAT, get_strict=get_strict,
-                                              max_d_of_SAT=max_d_of_SAT, max_d_of_UNSAT=max_d_of_UNSAT,
-                                              max_d_of_strict=max_d_of_strict,
-                                              degree_of_generated_var=degree_of_generated_var)
+        all_constraint = self.get_constraints()
 
         if solver_path is None:
             solver_path = Constant.default_path[solver_name]
 
         values_of_variable = {}
-        if constant_heuristic and (get_SAT ^ get_UNSAT ^ get_strict) and (not (get_SAT and get_UNSAT and get_UNSAT)):
+        if constant_heuristic and (self.get_SAT ^ self.get_UNSAT ^ self.get_strict) and (not (self.get_SAT and self.get_UNSAT and self.get_UNSAT)):
             all_constraint = Model.remove_equality_constraints(all_constraint)
         if core_iteration_heuristic:
             all_constraint = self.core_iteration(all_constraint, solver_path=solver_path,

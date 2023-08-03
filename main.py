@@ -147,7 +147,7 @@ if __name__ == '__main__':
     # Solver.core_iteration(all_constraint)
     # convert_string_to_set_of_variables('declare program vars x y')
     # print(convert_general_string_to_poly('x+--+y' , SetOfVariables.all_declared_var, SetOfVariables.program_declared_var))
-    model = Model(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'], ['x'])
+    model = Model(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'], ['x'], model_name='farkas')
 
     # c1 = CoefficientConstraint(model.get_polynomial('c_1-2').monomials[0].coefficient, '<')
     # c2 = CoefficientConstraint(model.get_polynomial('c_2+1').monomials[0].coefficient, '>=')
@@ -200,4 +200,4 @@ if __name__ == '__main__':
     # # print(model.get_constraints('farkas'))
 
 
-    model.run_on_solver(model_name='farkas', solver_name='z3', real_values=True, constant_heuristic=True, core_iteration_heuristic=False)
+    model.run_on_solver(solver_name='z3', real_values=True, constant_heuristic=True, core_iteration_heuristic=False)
