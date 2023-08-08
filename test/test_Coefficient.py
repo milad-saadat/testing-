@@ -6,14 +6,14 @@ from src.Coefficient import Coefficient
 
 class MyTestCase(unittest.TestCase):
     def test_converting_to_string1(self):
-        UnknownVariable.new_id = 0
+        UnknownVariable.number_of_variables = 0
 
         a = UnknownVariable('a')
         element1 = Element('7/10', [a, a])
         self.assertEqual('7/10*a*a', str(element1))
 
     def test_converting_to_string2(self):
-        UnknownVariable.new_id = 0
+        UnknownVariable.number_of_variables = 0
 
         a = UnknownVariable('a')
         b = UnknownVariable('b')
@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual('13/10*a*b', str(element2))
 
     def test_multiply_Element(self):
-        UnknownVariable.new_id = 0
+        UnknownVariable.number_of_variables = 0
         a = UnknownVariable('a')
         element1 = Element('7/10', [a, a])
         b = UnknownVariable('b')
@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_multiply_Coefficient(self):
         # (7/10 a + 1.3 a b) * (2 + 3b) = 7/5 a + 47/10 a b + 39/10 a b b
-        UnknownVariable.new_id = 0
+        UnknownVariable.number_of_variables = 0
         a = UnknownVariable('a')
         b = UnknownVariable('b')
 
@@ -46,7 +46,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_add_Coefficient(self):
         # (7/10 a + 1.3 a b) + (2 a + 3b) = 27/10 a + 3b + 1.3 ab
-        UnknownVariable.new_id = 0
+        UnknownVariable.number_of_variables = 0
         a = UnknownVariable('a')
         b = UnknownVariable('b')
 
@@ -62,7 +62,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_add_Coefficient_with_Element(self):
         # (7/10 a + 1.3 a b) + (2 a) = 27/10 a + 1.3 ab
-        UnknownVariable.new_id = 0
+        UnknownVariable.number_of_variables = 0
         a = UnknownVariable('a')
         b = UnknownVariable('b')
 
@@ -80,7 +80,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_add_Element(self):
         # (7/10 a + 1.3 a b) + (2 a + 3b) = 27/10 a + 3b + 1.3 ab
-        UnknownVariable.new_id = 0
+        UnknownVariable.number_of_variables = 0
         a = UnknownVariable('a')
         b = UnknownVariable('b')
 
@@ -93,7 +93,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_compare_Element(self):
         # (7/10 a + 1.3 a b) + (2 a + 3b) = 27/10 a + 3b + 1.3 ab
-        UnknownVariable.new_id = 0
+        UnknownVariable.number_of_variables = 0
         a = UnknownVariable('a')
         b = UnknownVariable('b')
 

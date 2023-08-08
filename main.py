@@ -14,11 +14,27 @@ from src.Constraint import CoefficientConstraint
 import os
 from src.Convertor import *
 import subprocess
-from src.Model import *
+from src.PositiveModel import *
 from src.gurobi import *
 from src.DNF import *
 
+"""@package docstring
+Documentation for this module.
+
+More details.
+"""
+
+def tes_func(a , b):
+    """
+
+    :param a: salam
+    :param b: khobi
+
+    :return: jame
+    """
+    pass
 if __name__ == '__main__':
+
     # a = UnknownVariable('a')
     # b = UnknownVariable('b')
     # c = UnknownVariable('c')
@@ -147,7 +163,7 @@ if __name__ == '__main__':
     # Solver.core_iteration(all_constraint)
     # convert_string_to_set_of_variables('declare program vars x y')
     # print(convert_general_string_to_poly('x+--+y' , SetOfVariables.all_declared_var, SetOfVariables.program_declared_var))
-    model = Model(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'], ['x'], model_name='farkas')
+    model = PositiveModel(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'], ['x'], model_name='farkas', get_UNSAT=False, get_strict=False)
 
     # c1 = CoefficientConstraint(model.get_polynomial('c_1-2').monomials[0].coefficient, '<')
     # c2 = CoefficientConstraint(model.get_polynomial('c_2+1').monomials[0].coefficient, '>=')
@@ -172,19 +188,15 @@ if __name__ == '__main__':
         lhs = []
         for k in range(j, i):
             lhs.append(PolynomialConstraint(
-                convert_general_string_to_poly(
-                    (input[k][input[k].find(':') + 1:]),
-                    model.template_variables + model.program_variables,
-                    model.program_variables
+                model.get_polynomial(
+                    (input[k][input[k].find(':') + 1:])
                 )
                 , '>=')
             )
         i += 1
         rhs = PolynomialConstraint(
-            convert_general_string_to_poly(
-                (input[i]),
-                model.template_variables + model.program_variables,
-                model.program_variables
+            model.get_polynomial(
+                (input[i])
             )
             , '>=')
         i += 2
@@ -200,4 +212,4 @@ if __name__ == '__main__':
     # # print(model.get_constraints('farkas'))
 
 
-    model.run_on_solver(solver_name='z3', real_values=True, constant_heuristic=True, core_iteration_heuristic=False)
+    model.run_on_solver(solver_name='gurobi', real_values=True, constant_heuristic=True, core_iteration_heuristic=False)

@@ -14,7 +14,7 @@ class Farkas:
         new_var = Solver.get_variable_polynomial(self.variables, 'lambda0', 'generated_for_Farkas')
         polynomial_of_sum = new_var
 
-        sum_of_strict = Polynomial(self.variables, [])
+        sum_of_strict = Solver.get_constant_polynomial(self.variables, '0')
 
         constraints = [CoefficientConstraint(new_var.monomials[0].coefficient, '>=')]
 

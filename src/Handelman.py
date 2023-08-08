@@ -43,7 +43,7 @@ class Handelman:
 
         all_monoid, is_strict = self.get_monoids(max_d)
         constraints = []
-        sum_of_strict = Polynomial(self.variables, [])
+        sum_of_strict = Solver.get_constant_polynomial(self.variables, '0')
 
         if self.RHS.is_strict():
             new_var = Solver.get_variable_polynomial(self.variables, 'y0', 'generated_for_handelman_in_strict_case')

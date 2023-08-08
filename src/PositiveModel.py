@@ -8,9 +8,9 @@ from src.Constant import *
 from src.Convertor import *
 from src.DNF import *
 from src.Coefficient import *
+from src.gurobi import *
 
-
-class Model:
+class PositiveModel:
 
     def __init__(self, template_variables, program_variables,
                  model_name, get_SAT=True, get_UNSAT=False, get_strict=False, max_d_of_SAT=0,
@@ -78,7 +78,6 @@ class Model:
             if self.get_strict:
                 new_dnf.append(model.get_UNSAT_constraint(need_strict=True))
             all_constraint.append(DNF(new_dnf))
-
         return all_constraint
 
     def run_on_solver(self, solver_name='z3', solver_path=None, core_iteration_heuristic=False,
@@ -86,16 +85,19 @@ class Model:
                       ):
 
         all_constraint = self.get_constraints()
-
+        if solver_name == 'gurobi':
+            check_constraints(all_constraint)
+            return
         if solver_path is None:
             solver_path = Constant.default_path[solver_name]
 
         values_of_variable = {}
         if constant_heuristic and (self.get_SAT ^ self.get_UNSAT ^ self.get_strict) and (not (self.get_SAT and self.get_UNSAT and self.get_UNSAT)):
-            all_constraint = Model.remove_equality_constraints(all_constraint)
+            all_constraint = PositiveModel.remove_equality_constraints(all_constraint)
         if core_iteration_heuristic:
             all_constraint = self.core_iteration(all_constraint, solver_path=solver_path,
                                                  real_values=real_values)
+
 
         solver_option = Constant.options[solver_name]
 
@@ -143,7 +145,7 @@ class Model:
     def remove_equality_constraints(all_constraint: [CoefficientConstraint]):
 
         while True:
-            equality_constraint = Model.get_equality_constraint(all_constraint)
+            equality_constraint = PositiveModel.get_equality_constraint(all_constraint)
             if equality_constraint is None:
                 break
             amount = 0
