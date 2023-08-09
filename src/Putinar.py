@@ -85,7 +85,7 @@ class Putinar:
                                                                 self.RHS.polynomial.variables, '-1'))
 
     def handel_strict(self, max_d, power_of_new_var):
-        new_variables = [UnknownVariable(name=f'w_{i + 1}', typ='generated_for_strict_unsat') for i in
+        new_variables = [UnknownVariable(name=f'w_{i + 1}', type_of_var='generated_for_strict_unsat') for i in
                          range(len(self.LHS))]
 
         for left_constraint in self.LHS:

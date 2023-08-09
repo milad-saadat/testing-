@@ -20,9 +20,9 @@ class PositiveModel:
         self.template_variables = []
         self.program_variables = []
         for name in template_variables:
-            self.template_variables.append(UnknownVariable(name=name, typ='template_var'))
+            self.template_variables.append(UnknownVariable(name=name, type_of_var='template_var'))
         for name in program_variables:
-            self.program_variables.append(UnknownVariable(name=name, typ='program_var'))
+            self.program_variables.append(UnknownVariable(name=name, type_of_var='program_var'))
 
         self.model_name = model_name
         self.get_SAT = get_SAT

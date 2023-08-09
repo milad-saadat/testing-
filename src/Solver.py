@@ -34,7 +34,7 @@ class Solver:
 
     @staticmethod
     def get_variable_polynomial(variables, name, typ=None):
-        new_variable = UnknownVariable(name=name, typ=typ)
+        new_variable = UnknownVariable(name=name, type_of_var=typ)
         return Polynomial(variables,
                           [Monomial(
                               variables, [0] * len(variables),

@@ -83,7 +83,7 @@ class MyTestCase(unittest.TestCase):
         constraint3 = PolynomialConstraint(poly3, '>')
 
         putinar = Putinar(constraint1.polynomial.variables, [constraint1, constraint2], constraint3)
-        new_variables = [UnknownVariable(name=f'w_{i + 1}', typ='generated_for_strict_unsat') for i in
+        new_variables = [UnknownVariable(name=f'w_{i + 1}', type_of_var='generated_for_strict_unsat') for i in
                          range(len(putinar.LHS))]
 
         for left_constraint in putinar.LHS:

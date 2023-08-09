@@ -72,7 +72,7 @@ class Handelman:
         if need_strict:
             polynomial_of_sum, constraints = self.get_poly_sum(need_strict)
             return Solver.find_equality_constrain(polynomial_of_sum,
-                                                  Polynomial(polynomial_of_sum.variables, [])) + constraints
+                                                  Polynomial(self.variables, [])) + constraints
 
         polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_unsat)
         return Solver.find_equality_constrain(polynomial_of_sum,
