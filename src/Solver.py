@@ -1,11 +1,23 @@
 from src.Constraint import CoefficientConstraint
 from src.Parser import *
+from src.DNF import DNF
 
 
 class Solver:
+    """ This class consist of some static method which are used in other classes
+
+    """
 
     @staticmethod
-    def find_equality_constrain(LHS: Polynomial, RHS: Polynomial):
+    def find_equality_constrain(LHS: Polynomial, RHS: Polynomial) -> [CoefficientConstraint]:
+        """ given two polynomial that should be equal together, this function finds constraint for the equality.
+        Moreover, all the Coefficient of each Monomial in each side should be equal.
+
+
+        :param LHS: left hand side of the equality
+        :param RHS: right hand side of the equality
+        :return: list of the constraints that needs to be true for equality
+        """
         all_degree = set(
             LHS.dict_from_degrees_to_monomials.keys()
         ).union(
@@ -22,7 +34,13 @@ class Solver:
         return all_constraint
 
     @staticmethod
-    def get_constant_polynomial(variables, constant):
+    def get_constant_polynomial(variables : [UnknownVariable], constant) -> Polynomial:
+        """generate new polynomial with one monomial and a constant as its coefficient
+
+                :param variables: polynomial variables
+                :param constant: the constant of the new polynomial
+                :return: polynomial with constant as its coefficient
+                """
         return Polynomial(variables,
                           [Monomial(
                               variables, [0] * len(variables),
@@ -33,8 +51,15 @@ class Solver:
                           )
 
     @staticmethod
-    def get_variable_polynomial(variables, name, typ=None):
-        new_variable = UnknownVariable(name=name, type_of_var=typ)
+    def get_variable_polynomial(variables: [UnknownVariable], name: str, type_of_var: str = None) -> Polynomial:
+        """generate new polynomial with one monomial and a new generated variable as its coefficient
+
+        :param variables: polynomial variables
+        :param name: name of the new variable
+        :param type_of_var: type of the new variable
+        :return: polynomial with new variable as its coefficient
+        """
+        new_variable = UnknownVariable(name=name, type_of_var=type_of_var)
         return Polynomial(variables,
                           [Monomial(
                               variables, [0] * len(variables),
@@ -45,7 +70,13 @@ class Solver:
                           )
 
     @staticmethod
-    def get_degree_polynomial(variables, degrees):
+    def get_degree_polynomial(variables: [UnknownVariable], degrees: [int]) -> Polynomial:
+        """ generate new polynomial with one monomial and given degrees
+
+        :param variables: polynomial variables
+        :param degrees: degree of the monomial
+        :return: polynomial with given degree set
+        """
         return Polynomial(variables,
                           [Monomial(
                               variables, degrees,
@@ -56,7 +87,13 @@ class Solver:
                           )
 
     @staticmethod
-    def convert_constraints_to_smt_format(all_constraint: [CoefficientConstraint], names=None):
+    def convert_constraints_to_smt_format(all_constraint: [DNF], names: [str] = None) -> str:
+        """ generate string for declaring constraint in smt format
+
+        :param all_constraint: constraint that should be converted to smt format
+        :param names: list of name for each constraint
+        :return: smt string format of constraints
+        """
         smt_string = ''
         for i, constraint in enumerate(all_constraint):
             if names is None:
@@ -67,7 +104,13 @@ class Solver:
         return smt_string
 
     @staticmethod
-    def smt_declare_variable_phase(all_constraint, real=True):
+    def smt_declare_variable_phase(all_constraint: [DNF], real: bool = True) -> str:
+        """ generate string format for declaring the variables in smt format
+
+        :param all_constraint: constraint that their variable should be generated
+        :param real: variables should be declare as integer or real valued
+        :return: smt string format of declaration phase
+        """
         all_variables = Solver.get_all_variable(all_constraint)
 
         smt_string = ''
@@ -81,7 +124,12 @@ class Solver:
         return smt_string
 
     @staticmethod
-    def get_all_variable(all_constraints):
+    def get_all_variable(all_constraints: [DNF]) -> [UnknownVariable]:
+        """ find all the variables in a list of constraint
+
+        :param all_constraints: list of constraints
+        :return: list of variables used in constraints
+        """
         all_variables = set()
         for dnf in all_constraints:
             for literal in dnf.literals:

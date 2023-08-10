@@ -1,4 +1,7 @@
 class Constant:
+    """This class consist of some constant dictionaries which are used for configuration of the solvers.
+
+    """
     options = {
         'z3': '(set-option :print-success false)\n' + \
               '(set-option :produce-models true)\n'

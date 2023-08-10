@@ -61,7 +61,7 @@ class Farkas:
          2)LHS => 0 > 0\n
 
         :param need_strict: determine which set of constraint to generate.
-        :return: list of coefficient constraints when it is satisfiable
+        :return: list of coefficient constraints when it is not satisfiable
         """
         if need_strict:
             polynomial_of_sum, constraints = self.get_poly_sum(need_strict)
