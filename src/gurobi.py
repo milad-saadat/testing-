@@ -5,6 +5,11 @@ from src.UnknownVariable import UnknownVariable
 
 
 def check_constraints(all_constraint):
+    """ This function performs gurobi optimizer on set of constraint to find if they are satisfiable.
+
+    :param all_constraint: list of constraints.
+    :return:
+    """
     all_variables = Solver.get_all_variable(all_constraint)
 
     with gp.Env(empty=True) as env:
@@ -19,7 +24,7 @@ def check_constraints(all_constraint):
     dict_from_name_to_gpvar = {}
 
     for var in all_variables:
-        dict_from_name_to_gpvar[str(var)] = model.addVar(name=str(var), vtype=GRB.CONTINUOUS)
+        dict_from_name_to_gpvar[var] = model.addVar(name=str(var), vtype=GRB.CONTINUOUS)
 
     model.update()
 
@@ -31,7 +36,7 @@ def check_constraints(all_constraint):
                 for element in constraint.coefficient.elements:
                     new_cons = element.constant
                     for var in element.variables:
-                        new_cons = new_cons * (dict_from_name_to_gpvar[str(var)])
+                        new_cons = new_cons * (dict_from_name_to_gpvar[var])
                     gp_con = gp_con + new_cons
                 if constraint.sign == '=':
                     gp_con = (gp_con == 0)
@@ -46,6 +51,7 @@ def check_constraints(all_constraint):
     model.optimize()
     if GRB.OPTIMAL != model.Status:
         print('not satisfied')
-        return
-    for name in dict_from_name_to_gpvar.keys():
-        print(name, " : ", dict_from_name_to_gpvar[name].X)
+        return {}
+    result = {}
+    for var in dict_from_name_to_gpvar.keys():
+        result[var] = dict_from_name_to_gpvar[var].X
