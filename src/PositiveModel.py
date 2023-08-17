@@ -30,11 +30,14 @@ class PositiveModel:
         max_d_of_UNSAT (int) : maximum degree of monoids when finding unsat constraints in handelman or putinar.
         max_d_of_strict (int) : maximum degree of monoids when finding unsat constraints in strict case in handelman or putinar.
         degree_of_generated_var (int) : degree of new variable that is generated for strict case in right hand side of equality in putinar.
+
+        preconditions ([DNF]) : list of conditions that must be satisfied independent of the horn clauses
     """
 
     def __init__(self, template_variables_name: [str], program_variables_name: [str],
                  model_name: str, get_SAT: bool = True, get_UNSAT: bool = False, get_strict: bool = False,
-                 max_d_of_SAT: int = 0, max_d_of_UNSAT: int = 0, max_d_of_strict: int = 0, degree_of_generated_var: int = 0
+                 max_d_of_SAT: int = 0, max_d_of_UNSAT: int = 0, max_d_of_strict: int = 0, degree_of_generated_var: int = 0,
+                 preconditions:[DNF] = []
                  ):
         self.paired_constraint = []
         self.template_variables = []
@@ -52,6 +55,7 @@ class PositiveModel:
         self.max_d_of_UNSAT = max_d_of_UNSAT
         self.max_d_of_strict = max_d_of_strict
         self.degree_of_generated_var = degree_of_generated_var
+        self.preconditions = preconditions
 
     def add_paired_constraint(self, lhs: DNF, rhs: DNF):
         """ add set of horn clause constraint for lhs => rhs
@@ -118,11 +122,11 @@ class PositiveModel:
             if self.get_strict:
                 new_dnf.append(model.get_UNSAT_constraint(need_strict=True))
             all_constraint.append(DNF(new_dnf))
-        return all_constraint
+        return all_constraint + self.preconditions
 
     def run_on_solver(self, solver_name: str = 'z3', solver_path: str = None, core_iteration_heuristic: bool = False,
                       constant_heuristic: bool = False, real_values: bool = True
-                      ) -> dict:
+                      ) -> (bool,dict):
         """ This function find the constraints for the clauses and run a solver with given configuration and find values for the template variables.
 
         :param solver_name: name of the solver.
@@ -130,7 +134,7 @@ class PositiveModel:
         :param core_iteration_heuristic: a boolean that determines the core iteration heuristic should be applied or not.
         :param constant_heuristic: a boolean that determines the removing constant heuristic should be applied or not.
         :param real_values: a boolean that determines if the variables should be integer or real value.
-        :return: a dictionary from template variable to their value.
+        :return: a boolean that is true if it  is satisfiable and a dictionary from template variable to their value.
         """
         all_constraint = self.get_constraints()
         if solver_name == 'gurobi':
@@ -170,7 +174,8 @@ class PositiveModel:
         output = subprocess.getoutput(f'{solver_path} {Constant.command[solver_name]} checking.txt')
         is_sat = output.split('\n')[0]
         values = '\n'.join(output.split('\n')[1:])[1:-1].strip()
-        print("here : ", is_sat)
+        if is_sat == 'unsat':
+            return False, {}
         for line in values.split('\n'):
             line = line.strip()
             line = line[1:-1].strip()
@@ -182,9 +187,8 @@ class PositiveModel:
                     break
         result_dictionary = {}
         for var in values_of_variable.keys():
-            print(var, " : ", values_of_variable[var])
             result_dictionary[var] = values_of_variable[var]
-        return result_dictionary
+        return True, result_dictionary
 
     @staticmethod
     def get_equality_constraint(all_constraint: [DNF]):

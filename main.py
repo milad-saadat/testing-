@@ -1,39 +1,86 @@
-from src.UnknownVariable import UnknownVariable
-from src.Coefficient import Element
-from src.Coefficient import Coefficient
-from src.Polynomial import Monomial
-from src.Polynomial import Polynomial
-import numpy as np
-from src.Parser import *
-from src.Constraint import *
-from src.Solver import *
-from src.Farkas import Farkas
-from src.Handelman import Handelman
-from src.Putinar import Putinar
-from src.Constraint import CoefficientConstraint
-import os
-from src.Convertor import *
-import subprocess
+import json
+import time
+import signal
+import sys
+import multiprocessing
+
 from src.PositiveModel import *
-from src.gurobi import *
 from src.DNF import *
 
-"""@package docstring
-Documentation for this module.
 
-More details.
-"""
+def handler(signum, frame):
+    print("Forever is over!")
+    raise Exception("end of time")
 
-def tes_func(a , b):
-    """
+def run_on_file(file_path: str, solver_name: str):
+    f = open(file_path, "r")
+    file_input = f.read().split('\n')
+    model = PositiveModel(file_input[1][file_input[1].find(':') + 1:-2].split(),
+                          file_input[0][file_input[0].find(':') + 1:-2].split(), model_name='farkas',
+                          get_UNSAT=False, get_strict=False)
 
-    :param a: salam
-    :param b: khobi
+    i = 4
+    while i < len(file_input):
 
-    :return: jame
-    """
-    pass
+        while len(file_input[i]) == 0:
+            i += 1
+        i += 1
+        while len(file_input[i]) == 0:
+            i += 1
+        j = i
+        while i < len(file_input) and file_input[i][0] == 'd':
+            i += 1
+        lhs = []
+        for k in range(j, i):
+            lhs.append(PolynomialConstraint(
+                model.get_polynomial(
+                    (file_input[k][file_input[k].find(':') + 1:])
+                )
+                , '>=')
+            )
+        i += 1
+
+        rhs = PolynomialConstraint(
+            model.get_polynomial(
+                (file_input[i])
+            )
+            , '>=')
+
+        i += 3
+        model.add_paired_constraint(DNF([lhs]), DNF([[rhs]]))
+
+    start = time.time()*1000
+    is_sat, values = model.run_on_solver(solver_name=solver_name, real_values=False, constant_heuristic=False,
+                                         core_iteration_heuristic=False)
+
+    end = time.time()*1000
+    print(is_sat, end-start)
+    with open("./result_" + sys.argv[1], "a") as fp:
+        fp.write(solver_name + " : " + str(is_sat) + " " + str(end-start) + "\n")
+    return is_sat, end-start
+
+
 if __name__ == '__main__':
+
+    output_dict = {}
+    for solver_name in ["z3", "mathsat", "bclt"]:
+        print(solver_name)
+        p = multiprocessing.Process(target=run_on_file, args=[sys.argv[1], solver_name])
+        p.start()
+        p.join(20)
+        if p.is_alive():
+            print("time limit")
+            p.kill()
+            p.join()
+            with open("./result_" + sys.argv[1], "a") as fp:
+                fp.write(solver_name + " : time limit\n" )
+        # signal.signal(signal.SIGALRM, handler)
+        # signal.alarm(20)
+        # try:
+        #     sat, time = run_on_file(sys.argv[1], solver_name)
+        #
+        # except Exception as exc:
+        #     print("hello")
 
     # a = UnknownVariable('a')
     # b = UnknownVariable('b')
@@ -163,7 +210,6 @@ if __name__ == '__main__':
     # Solver.core_iteration(all_constraint)
     # convert_string_to_set_of_variables('declare program vars x y')
     # print(convert_general_string_to_poly('x+--+y' , SetOfVariables.all_declared_var, SetOfVariables.program_declared_var))
-    model = PositiveModel(['c_0', 'c_1', 'c_2', 'c_3', 's_0', 's_1', 's_2', 's_3'], ['x'], model_name='farkas', get_UNSAT=False, get_strict=False)
 
     # c1 = CoefficientConstraint(model.get_polynomial('c_1-2').monomials[0].coefficient, '<')
     # c2 = CoefficientConstraint(model.get_polynomial('c_2+1').monomials[0].coefficient, '>=')
@@ -176,40 +222,3 @@ if __name__ == '__main__':
     # print(-dnf)
     # model.add_paired_constraint(dnf, dnf2)
     # print(model)
-    f = open("test.txt", "r")
-    input = f.read().split('\n')
-    i = 0
-    all_constraint = []
-    while i < len(input):
-        i += 1
-        j = i
-        while i < len(input) and input[i][0] == 'd':
-            i += 1
-        lhs = []
-        for k in range(j, i):
-            lhs.append(PolynomialConstraint(
-                model.get_polynomial(
-                    (input[k][input[k].find(':') + 1:])
-                )
-                , '>=')
-            )
-        i += 1
-        rhs = PolynomialConstraint(
-            model.get_polynomial(
-                (input[i])
-            )
-            , '>=')
-        i += 2
-        model.add_paired_constraint(DNF([lhs]), DNF([[rhs]]))
-
-
-    # conss = model.get_constraints('farkas', get_UNSAT=True)
-    # for con in conss:
-    #     print(con)
-    #
-    # print('--------------------')
-    # check_constraints(conss)
-    # # print(model.get_constraints('farkas'))
-
-
-    model.run_on_solver(solver_name='gurobi', real_values=True, constant_heuristic=True, core_iteration_heuristic=False)
