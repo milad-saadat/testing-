@@ -1,0 +1,3 @@
+z3 : time limit
+mathsat : True 366.608154296875
+bclt : True 782.9541015625

@@ -55,25 +55,24 @@ def run_on_file(file_path: str, solver_name: str):
 
     end = time.time()*1000
     print(is_sat, end-start)
-    with open("./result_" + sys.argv[1], "a") as fp:
-        fp.write(solver_name + " : " + str(is_sat) + " " + str(end-start) + "\n")
+    with open("./result_" + sys.argv[2]+ "_" + sys.argv[1], "w") as fp:
+        fp.write(str(end-start) + "\n" + str(is_sat) + '\n')
+        for var in values.keys():
+            fp.write(str(var) + " : " + str(values[var]) + "\n")
     return is_sat, end-start
 
 
 if __name__ == '__main__':
 
-    output_dict = {}
-    for solver_name in ["z3", "mathsat", "bclt"]:
-        print(solver_name)
-        p = multiprocessing.Process(target=run_on_file, args=[sys.argv[1], solver_name])
-        p.start()
-        p.join(20)
-        if p.is_alive():
-            print("time limit")
-            p.kill()
-            p.join()
-            with open("./result_" + sys.argv[1], "a") as fp:
-                fp.write(solver_name + " : time limit\n" )
+    p = multiprocessing.Process(target=run_on_file, args=[sys.argv[1], sys.argv[2]])
+    p.start()
+    p.join(20)
+    if p.is_alive():
+        print("time limit")
+        p.kill()
+        p.join()
+        with open("./result_" + sys.argv[2]+ "_" + sys.argv[1], "w") as fp:
+            fp.write( "time limit\n" )
         # signal.signal(signal.SIGALRM, handler)
         # signal.alarm(20)
         # try:
