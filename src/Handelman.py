@@ -81,7 +81,7 @@ class Handelman:
             if is_strict[i]:
                 sum_of_strict = sum_of_strict + new_var_poly
 
-        if need_strict:
+        if need_strict or self.RHS.is_strict():
             constraints.append(CoefficientConstraint(sum_of_strict.monomials[0].coefficient, '>'))
 
         return polynomial_of_sum, constraints
@@ -92,7 +92,7 @@ class Handelman:
         :return: list of coefficient constraints when it is satisfiable
         """
         polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_sat)
-        return Solver.find_equality_constrain(polynomial_of_sum, self.RHS.polynomial) + constraints
+        return Solver.find_equality_constraint(polynomial_of_sum, self.RHS.polynomial) + constraints
 
     def get_UNSAT_constraint(self, need_strict: bool = False) -> [CoefficientConstraint]:
         """ a function to find the constraints when it is not satisfiable.\n
@@ -105,9 +105,9 @@ class Handelman:
         """
         if need_strict:
             polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_unsat, need_strict)
-            return Solver.find_equality_constrain(polynomial_of_sum,
-                                                  Polynomial(self.variables, [])) + constraints
+            return Solver.find_equality_constraint(polynomial_of_sum,
+                                                   Polynomial(self.variables, [])) + constraints
 
         polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_unsat)
-        return Solver.find_equality_constrain(polynomial_of_sum,
-                                              Solver.get_constant_polynomial(self.variables, '-1')) + constraints
+        return Solver.find_equality_constraint(polynomial_of_sum,
+                                               Solver.get_constant_polynomial(self.variables, '-1')) + constraints

@@ -71,7 +71,7 @@ class Element:
             for i in range(len(self.variables)):
                 if not (self.variables[i] == other.variables[i]):
                     return False
-            return self.constant == other.constant
+            return True
         else:
             return False
 

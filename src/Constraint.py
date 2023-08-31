@@ -48,6 +48,12 @@ class PolynomialConstraint:
         elif self.sign == '!=':
             return PolynomialConstraint(self.polynomial, '=')
 
+    def convert_to_preorder(self) -> str:
+        """ convert constraint to preorder format.
+
+        :return: string in preorder format of the class.
+        """
+        return '(' + self.sign + ' ' + self.polynomial.convert_to_preorder() + ' ' + '0)'
 
 class CoefficientConstraint:
     """ A class that represent the constraint with a Coefficient on one side and zero on the other side\n

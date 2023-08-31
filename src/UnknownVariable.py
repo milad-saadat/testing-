@@ -34,6 +34,8 @@ class UnknownVariable:
     def __str__(self) -> str:
         """Convert variable to string by putting name and id together.
                 """
+        if self.type == 'template_var' or self.type == 'program_var':
+            return self.name
         if self.name is not None:
             return self.name + f'_{self.id}'
         return str(f'var_{self.id}[{self.name}]')

@@ -1,21 +1,20 @@
 import unittest
 
-from src.Constraint import *
+
 from src.Farkas import Farkas
-from src.Parser import *
-from src.Solver import *
-
-
+from src.PositiveModel import *
+from src.Constraint import PolynomialConstraint
 class MyTestCase(unittest.TestCase):
     def test_Farkas_SAT(self):
-        convert_string_to_set_of_variables('declare template vars c1 c2 d')
-        convert_string_to_set_of_variables('declare program vars  i j ip jp ')
         # First example of first article
+        UnknownVariable.number_of_variables=0
 
-        constraint1 = convert_string_to_constraint('(1*c1)*i^1 + (1*c2)*j^1 + (1*d) >= 0')
-        constraint2 = convert_string_to_constraint('(1)*i^1 + (-1)*ip^1 + (4) >= 0')
-        constraint3 = convert_string_to_constraint('(1)*j^1 + (-1)*jp^1 >= 0')
-        constraint4 = convert_string_to_constraint('(1*c1)*ip^1 + (1*c2)*jp^1 + (1*d) >= 0')
+        model = PositiveModel(['c1', 'c2', 'd'], ['i', 'j', 'ip', 'jp'], None)
+        constraint1 = PolynomialConstraint(model.get_polynomial('(1*c1)*i^1 + (1*c2)*j^1 + (1*d)') ,'>=')
+        constraint2 = PolynomialConstraint(model.get_polynomial('(1)*i^1 + (-1)*ip^1 + 4') ,'>=')
+
+        constraint3 = PolynomialConstraint(model.get_polynomial('1*j^1 + (-1)*jp^1') ,'>=')
+        constraint4 = PolynomialConstraint(model.get_polynomial('(1*c1)*ip^1 + (1*c2)*jp^1 + d') ,'>=')
 
         frakas = Farkas(constraint1.polynomial.variables, [constraint1, constraint2, constraint3], constraint4)
         all_constraint = frakas.get_SAT_constraint()
@@ -24,15 +23,15 @@ class MyTestCase(unittest.TestCase):
             answer_string += str(con)
             answer_string += '\n'
 
-        actual_answer = '-1*c2+-1*lambda3=0\n' + \
-                        '-1*c1+-1*lambda2=0\n' + \
-                        '1*lambda3+1*c2*lambda1=0\n' + \
-                        '1*lambda2+1*c1*lambda1=0\n' + \
-                        '-1*d+1*lambda0+4*lambda2+1*d*lambda1=0\n' + \
-                        '1*lambda0>=0\n' + \
-                        '1*lambda1>=0\n' + \
-                        '1*lambda2>=0\n' + \
-                        '1*lambda3>=0\n'
+        actual_answer = '-1*c2+-1*y3_11=0\n' + \
+                        '-1*c1+-1*y2_10=0\n' + \
+                        '1*y3_11+1*c2*y1_9=0\n' + \
+                        '1*y2_10+1*c1*y1_9=0\n' + \
+                        '-1*d+1*y0_8+4*y2_10+1*d*y1_9=0\n' + \
+                        '1*y0_8>=0\n' + \
+                        '1*y1_9>=0\n' + \
+                        '1*y2_10>=0\n' + \
+                        '1*y3_11>=0\n'
 
         self.assertEqual(actual_answer, answer_string)
 

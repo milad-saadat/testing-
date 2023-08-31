@@ -9,7 +9,7 @@ class Solver:
     """
 
     @staticmethod
-    def find_equality_constrain(LHS: Polynomial, RHS: Polynomial) -> [CoefficientConstraint]:
+    def find_equality_constraint(LHS: Polynomial, RHS: Polynomial) -> [CoefficientConstraint]:
         """ given two polynomial that should be equal together, this function finds constraint for the equality.
         Moreover, all the Coefficient of each Monomial in each side should be equal.
 
@@ -104,14 +104,15 @@ class Solver:
         return smt_string
 
     @staticmethod
-    def smt_declare_variable_phase(all_constraint: [DNF], real: bool = True) -> str:
+    def smt_declare_variable_phase(all_constraint: [DNF], real: bool = True, pre_variables: [UnknownVariable] = []) -> str:
         """ generate string format for declaring the variables in smt format
 
         :param all_constraint: constraint that their variable should be generated
-        :param real: variables should be declare as integer or real valued
+        :param real: variables should be declared as integer or real valued
+        :param pre_variables: list of variables that should be defined but might not be in constraints
         :return: smt string format of declaration phase
         """
-        all_variables = Solver.get_all_variable(all_constraint)
+        all_variables = Solver.get_all_variable(all_constraint, pre_variables)
 
         smt_string = ''
 
@@ -124,13 +125,14 @@ class Solver:
         return smt_string
 
     @staticmethod
-    def get_all_variable(all_constraints: [DNF]) -> [UnknownVariable]:
+    def get_all_variable(all_constraints: [DNF], pre_variables: [UnknownVariable] = []) -> [UnknownVariable]:
         """ find all the variables in a list of constraint
 
         :param all_constraints: list of constraints
+        :param pre_variables: list of variables that should be defined but might not be in constraints
         :return: list of variables used in constraints
         """
-        all_variables = set()
+        all_variables = set(pre_variables)
         for dnf in all_constraints:
             for literal in dnf.literals:
                 for constraint in literal:

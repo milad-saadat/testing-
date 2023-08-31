@@ -25,7 +25,7 @@ class Farkas:
         :param need_strict: is it generated for the 0 > 0 case or not.
         :return: polynomial of sum of all left hand side with new variables and corresponding constraints.
         """
-        new_var = Solver.get_variable_polynomial(self.variables, 'lambda0', 'generated_for_Farkas')
+        new_var = Solver.get_variable_polynomial(self.variables, 'y0', 'generated_for_Farkas')
         polynomial_of_sum = new_var
 
         sum_of_strict = Solver.get_constant_polynomial(self.variables, '0')
@@ -42,7 +42,7 @@ class Farkas:
             polynomial_of_sum = polynomial_of_sum + (new_var_poly * left_poly)
             constraints.append(CoefficientConstraint(new_var_poly.monomials[0].coefficient, '>='))
 
-        if need_strict:
+        if need_strict or self.RHS.is_strict():
             constraints.append(CoefficientConstraint(sum_of_strict.monomials[0].coefficient, '>'))
         return polynomial_of_sum, constraints
 
@@ -52,7 +52,7 @@ class Farkas:
         :return: list of coefficient constraints when it is satisfiable
         """
         polynomial_of_sum, constraints = self.get_poly_sum()
-        return Solver.find_equality_constrain(polynomial_of_sum, self.RHS.polynomial) + constraints
+        return Solver.find_equality_constraint(polynomial_of_sum, self.RHS.polynomial) + constraints
 
     def get_UNSAT_constraint(self, need_strict: bool = False) -> [CoefficientConstraint]:
         """ a function to find the constraints when it is not satisfiable.\n
@@ -65,9 +65,9 @@ class Farkas:
         """
         if need_strict:
             polynomial_of_sum, constraints = self.get_poly_sum(need_strict)
-            return Solver.find_equality_constrain(polynomial_of_sum,
-                                                  Polynomial(polynomial_of_sum.variables, [])) + constraints
+            return Solver.find_equality_constraint(polynomial_of_sum,
+                                                   Polynomial(polynomial_of_sum.variables, [])) + constraints
         polynomial_of_sum, constraints = self.get_poly_sum()
-        return Solver.find_equality_constrain(polynomial_of_sum,
-                                              Solver.get_constant_polynomial(self.RHS.polynomial.variables, '-1')) + \
+        return Solver.find_equality_constraint(polynomial_of_sum,
+                                               Solver.get_constant_polynomial(self.RHS.polynomial.variables, '-1')) + \
             constraints

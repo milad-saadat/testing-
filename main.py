@@ -3,22 +3,25 @@ import time
 import signal
 import sys
 import multiprocessing
-
+from os import listdir
+from os.path import isfile, join
 from src.PositiveModel import *
 from src.DNF import *
+import pandas as pd
 
 
 def handler(signum, frame):
     print("Forever is over!")
     raise Exception("end of time")
 
+
 def run_on_file(file_path: str, solver_name: str):
     f = open(file_path, "r")
     file_input = f.read().split('\n')
     model = PositiveModel(file_input[1][file_input[1].find(':') + 1:-2].split(),
-                          file_input[0][file_input[0].find(':') + 1:-2].split(), model_name='farkas',
-                          get_UNSAT=False, get_strict=False)
-
+                          file_input[0][file_input[0].find(':') + 1:-2].split(), model_name='putinar',
+                          get_UNSAT=False, get_strict=False,
+                          max_d_of_SAT=2, max_d_of_UNSAT=2, max_d_of_strict=2, degree_of_generated_var=2)
     i = 4
     while i < len(file_input):
 
@@ -49,38 +52,91 @@ def run_on_file(file_path: str, solver_name: str):
         i += 3
         model.add_paired_constraint(DNF([lhs]), DNF([[rhs]]))
 
-    start = time.time()*1000
+    start = time.time() * 1000
     is_sat, values = model.run_on_solver(solver_name=solver_name, real_values=False, constant_heuristic=False,
                                          core_iteration_heuristic=False)
 
-    end = time.time()*1000
-    print(is_sat, end-start)
-    with open("./result_" + sys.argv[2]+ "_" + sys.argv[1], "w") as fp:
-        fp.write(str(end-start) + "\n" + str(is_sat) + '\n')
+    end = time.time() * 1000
+    print(is_sat, end - start)
+    with open("./result_" + sys.argv[2] + "_" + sys.argv[1], "w") as fp:
+        fp.write(str(end - start) + "\n" + str(is_sat) + '\n')
         for var in values.keys():
             fp.write(str(var) + " : " + str(values[var]) + "\n")
-    return is_sat, end-start
+    return is_sat, end - start
 
+
+"""
+horn_clause: 1 * x >= 0 AND 64  -  1 * x >=0 AND
+ 1 * tx >= 0 AND
+ 64  -  1 * tx >= 0 AND
+ 1 * y >= 0 AND
+ 64  -  1 * y >=0
+->
+1 * s_0  +  1 * s_1 * tx  +  1 * s_2 * x  +  1 * s_3 * y >= 0
+
+"""
 
 if __name__ == '__main__':
 
-    p = multiprocessing.Process(target=run_on_file, args=[sys.argv[1], sys.argv[2]])
-    p.start()
-    p.join(20)
-    if p.is_alive():
-        print("time limit")
-        p.kill()
-        p.join()
-        with open("./result_" + sys.argv[2]+ "_" + sys.argv[1], "w") as fp:
-            fp.write( "time limit\n" )
-        # signal.signal(signal.SIGALRM, handler)
-        # signal.alarm(20)
-        # try:
-        #     sat, time = run_on_file(sys.argv[1], solver_name)
-        #
-        # except Exception as exc:
-        #     print("hello")
+    # p = multiprocessing.Process(target=run_on_file, args=[sys.argv[1], sys.argv[2]])
+    # p.start()
+    # p.join(20)
+    # if p.is_alive():
+    #     print("time limit")
+    #     p.kill()
+    #     p.join()
+    #     with open("./result_" + sys.argv[2]+ "_" + sys.argv[1], "w") as fp:
+    #         fp.write( "time limit\n" )
 
+    fileName = './inputs/'
+    onlyfiles = [f for f in listdir(fileName) if isfile(join(fileName, f))]
+    data = {
+        'name': [],
+        'bclt': [],
+        'z3': [],
+        'mathsat': []
+    }
+    for file in sorted(onlyfiles):
+        data['name'].append(file)
+        for solver_name in ['bclt', 'z3', 'mathsat']:
+            try:
+                with open(f'./output/result_{solver_name}_' + file, 'r') as fp:
+                    lines = fp.read().split('\n')
+                    if lines[0].startswith('time') or lines[1] == 'False':
+                        data[solver_name].append(0)
+                    else:
+                        data[solver_name].append(round(float(lines[0])))
+            except:
+                data[solver_name].append(0)
+
+    df = pd.DataFrame(data=data)
+    df.to_excel('dict1.xlsx')
+    ehsan = pd.read_excel('ehsan.xlsx')
+    print(int(ehsan[ehsan['name'] == '2Nested_false-termination.c.t2_mult.t2']['bclt']))
+    diff = {
+        'names': [],
+        'bclt': [],
+        'z3': [],
+        'mathsat': []
+    }
+    for name in ehsan['name']:
+        diff['names'].append(name)
+        for solver_name in ['bclt', 'z3', 'mathsat']:
+
+            if int(ehsan[ehsan['name'] == name][solver_name]) == 0 and int(df[df['name'] == name][solver_name]) != 0:
+                diff[solver_name].append(1)
+                print(1, name, solver_name)
+            elif int(ehsan[ehsan['name'] == name][solver_name]) != 0 and int(df[df['name'] == name][solver_name]) == 0:
+                diff[solver_name].append(2)
+                print(2, name, solver_name)
+
+            else:
+                diff[solver_name].append(0)
+
+    diff = pd.DataFrame(data=diff)
+    for solver_name in ['bclt', 'z3', 'mathsat']:
+        print(solver_name)
+        print(diff[solver_name].value_counts())
     # a = UnknownVariable('a')
     # b = UnknownVariable('b')
     # c = UnknownVariable('c')
@@ -204,8 +260,8 @@ if __name__ == '__main__':
     #         Solver.convert_constraints_to_smt_format(all_constraint) + '\n (check-sat)\n(get-model)')
     # f.close()
     # # os.system('./solver/z3 checking.txt')
-    # output = subprocess.getoutput("./solver/z3 checking.txt")
-    # print('salam ' + output)
+    # output_farkas = subprocess.getoutput("./solver/z3 checking.txt")
+    # print('salam ' + output_farkas)
     # Solver.core_iteration(all_constraint)
     # convert_string_to_set_of_variables('declare program vars x y')
     # print(convert_general_string_to_poly('x+--+y' , SetOfVariables.all_declared_var, SetOfVariables.program_declared_var))

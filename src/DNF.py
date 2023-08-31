@@ -55,8 +55,8 @@ class DNF:
         """
         res = ''
         for literal in self.literals:
-            res += ' AND '.join([str(item) for item in literal])
-            res += '\n'
+            res += '\n  AND '.join(["\t" + str(item) for item in literal])
+            res += '\n OR \n'
         return '(\n' + res + ')\n'
 
     def convert_to_preorder(self) -> str:

@@ -4,7 +4,7 @@ from src.UnknownVariable import UnknownVariable
 
 class MyTestCase(unittest.TestCase):
     def test_converting_to_string(self):
-        a = UnknownVariable('testing')
+        a = UnknownVariable('testing', type_of_var="template_var")
         self.assertEqual('testing', str(a))
 
 

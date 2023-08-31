@@ -113,7 +113,7 @@ class Putinar:
         :return: list of coefficient constraints when it is satisfiable
         """
         polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_sat)
-        return constraints + Solver.find_equality_constrain(polynomial_of_sum, self.RHS.polynomial)
+        return constraints + Solver.find_equality_constraint(polynomial_of_sum, self.RHS.polynomial)
 
     def get_UNSAT_constraint(self, need_strict=False):
         """ a function to find the constraints when it is not satisfiable.\n
@@ -127,8 +127,8 @@ class Putinar:
         if need_strict:
             return self.handel_strict(self.max_d_for_unsat_strict, self.degree_for_new_var)
         polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_unsat)
-        return constraints + Solver.find_equality_constrain(polynomial_of_sum,
-                                                            Solver.get_constant_polynomial(
+        return constraints + Solver.find_equality_constraint(polynomial_of_sum,
+                                                             Solver.get_constant_polynomial(
                                                                 self.RHS.polynomial.variables, '-1'))
 
     def handel_strict(self, max_d:int, power_of_new_var:int) -> [[CoefficientConstraint]]:
@@ -164,7 +164,7 @@ class Putinar:
                 poly_of_var_to_power = Solver.get_constant_polynomial(all_variable, '1')
                 for _ in range(2 * power_of_new_var):
                     poly_of_var_to_power = poly_of_var_to_power * new_var_poly
-                all_constraints.append(Solver.find_equality_constrain(poly_of_var_to_power, poly_sum))
+                all_constraints.append(Solver.find_equality_constraint(poly_of_var_to_power, poly_sum))
         return all_constraints
 
     @staticmethod

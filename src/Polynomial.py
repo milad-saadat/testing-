@@ -75,6 +75,18 @@ class Monomial:
                 """
         return Monomial(self.variables, self.degrees, -self.coefficient)
 
+    def convert_to_preorder(self) -> str:
+        """ convert Monomial to preorder format.
+
+        :return: string in preorder format of the class.
+        """
+        preorder = self.coefficient.convert_to_preorder()
+
+        for i, var in enumerate(self.variables):
+            for _ in range(self.degrees[i]):
+                preorder = '( * ' + preorder + ' ' + str(var)  +' )'
+        return preorder
+
 
 class Polynomial:
     """ A class that represent the Polynomial\n
@@ -191,3 +203,15 @@ class Polynomial:
                                       monomial.coefficient)
                              )
         return Polynomial(self.variables + new_variables, monomials)
+
+    def convert_to_preorder(self) -> str:
+        """ convert Polynomial to preorder format.
+
+        :return: string in preorder format of the class.
+        """
+        if len(self.monomials) == 0:
+            return '0'
+        preorder = self.monomials[0].convert_to_preorder()
+        for i in range(1, len(self.monomials)):
+            preorder = '( + ' + preorder + ' ' + self.monomials[i].convert_to_preorder() + ')'
+        return preorder
