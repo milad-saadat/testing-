@@ -106,3 +106,17 @@ class CoefficientConstraint:
                 return True
             else:
                 return False
+
+    def __neg__(self):
+        """ negate a constraint by negating the coefficient and reversing the sign
+
+        :return: new constraint that represent the negation of the previous constraint.
+        """
+        if self.sign == '>':
+            return CoefficientConstraint(-self.coefficient, '>=')
+        elif self.sign == '>=':
+            return CoefficientConstraint(-self.coefficient, '>')
+        elif self.sign == '=':
+            return CoefficientConstraint(self.coefficient, '!=')
+        elif self.sign == '!=':
+            return CoefficientConstraint(self.coefficient, '=')

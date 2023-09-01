@@ -101,12 +101,12 @@ class PositiveModel:
         """
         all_constraint = []
         for pair in self.paired_constraint:
-            if self.model_name == 'farkas':
+            if self.model_name == Theorem.Farkas:
                 model = Farkas(self.program_variables, LHS=pair[0], RHS=pair[1])
-            elif self.model_name == 'handelman':
+            elif self.model_name == Theorem.Handelman:
                 model = Handelman(self.program_variables, LHS=pair[0], RHS=pair[1],
                                   max_d_for_sat=self.max_d_of_SAT, max_d_for_unsat=self.max_d_of_UNSAT)
-            elif self.model_name == 'putinar':
+            elif self.model_name == Theorem.Putinar:
                 model = Putinar(self.program_variables, LHS=pair[0], RHS=pair[1],
                                 max_d_for_sat=self.max_d_of_SAT, max_d_for_unsat=self.max_d_of_UNSAT,
                                 max_d_for_unsat_strict=self.max_d_of_strict,
@@ -132,7 +132,6 @@ class PositiveModel:
                         core_iteration_heuristic: bool = False,
                         constant_heuristic: bool = False, real_values: bool = True):
         all_constraint = self.get_generated_constraints()
-        print(solver_name)
         if solver_path == "default":
             solver_path = Constant.default_path[solver_name]
         if constant_heuristic and (self.get_SAT ^ self.get_UNSAT ^ self.get_strict) and (

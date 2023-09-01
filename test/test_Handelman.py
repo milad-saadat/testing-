@@ -40,7 +40,7 @@ class MyTestCase(unittest.TestCase):
                         '1*y4_6>=0\n'+\
                         '1*y5_7>=0\n'+\
                         '1*y6_8>=0\n'+\
-                        '0+1*y1_3>0\n'+\
+                        '0+1*y1_3>0\n'
         self.assertEqual(actual_answer, answer_string)
 
 

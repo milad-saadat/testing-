@@ -13,6 +13,7 @@ def find_index_of_variable(name: str, all_variable: [UnknownVariable]) -> int:
     :param all_variable: list of all variables.
     :return: index of the variable.
     """
+    all_variable.sort()
     for i in range(len(all_variable)):
         if name == all_variable[i].name:
             return i
