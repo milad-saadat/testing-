@@ -1,6 +1,5 @@
 import json
 import time
-import signal
 import sys
 import multiprocessing
 from os import listdir
