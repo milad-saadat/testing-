@@ -1,4 +1,5 @@
 import json
+import sys
 
 from src.Polynomial import Polynomial
 from lark import Lark
@@ -9,7 +10,7 @@ from src.Polynomial import Monomial
 from src.Convertor import *
 from src.PositiveModel import *
 
-with open("./config", "r") as jsonfile:
+with open(sys.argv[3], "r") as jsonfile:
     data = json.load(jsonfile)
 
 
@@ -142,7 +143,6 @@ def parse_readable_file(poly_text: str):
         """, parser="lalr")
 
     parse_tree = parser.parse(poly_text)
-    print(parse_tree.pretty())
     return traverse_readable_tree(parse_tree)
 
 
@@ -258,9 +258,16 @@ def parse_smt_file(poly_text: str):
     parse_tree = parser.parse(poly_text)
     return traverse_smt_tree(parse_tree)
 
-with open("./test_smt.txt", "r") as file:
+with open(sys.argv[2], "r") as file:
     file_input = file.read()
-parse_smt_file(file_input)
+
+if sys.argv[1] == "-smt":
+    parse_smt_file(file_input)
+elif sys.argv[1] == "-H":
+    parse_readable_file(file_input)
+else:
+    print("not defined format")
+    exit(0)
 
 model.run_on_solver(temp_path=data["temp_path"], solver_name=data["solver_name"], solver_path=data["solver_path"],
                     core_iteration_heuristic=data["core_iteration_heuristic"],
