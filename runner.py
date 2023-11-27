@@ -62,7 +62,7 @@ def traverse_readable_tree(parse_tree):
             literal.append(traverse_readable_tree(parse_tree.children[i]))
         return literal
     elif parse_tree.data == 'constraint':
-        return DNF([[PolynomialConstraint(traverse_readable_tree(parse_tree.children[0]), str(parse_tree.children[1]))]])
+        return DNF([[PolynomialConstraint(traverse_readable_tree(parse_tree.children[0]) - traverse_readable_tree(parse_tree.children[2]), str(parse_tree.children[1]))]])
     elif parse_tree.data == 'polynomial':
         return convert_to_desired_poly(traverse_readable_tree(parse_tree.children[0]), model.program_variables)
     elif parse_tree.data == 'expression':
@@ -118,7 +118,7 @@ def parse_readable_file(poly_text: str):
             dnf : constraint | "(" dnf ")" | dnf LOGICAL_SIGN dnf
              
             
-            constraint : polynomial COMP_SIGN "0" 
+            constraint : polynomial COMP_SIGN polynomial 
             polynomial : expression
             expression : term | expression SIGN term 
 
@@ -187,7 +187,13 @@ def traverse_smt_tree(parse_tree):
                 return result_dnf
 
     elif parse_tree.data == 'constraint':
-        return DNF([[PolynomialConstraint(traverse_smt_tree(parse_tree.children[1]), str(parse_tree.children[0]))]])
+        return DNF(
+            [[
+                PolynomialConstraint(
+                    traverse_smt_tree(parse_tree.children[1] )
+                    -
+                    traverse_smt_tree(parse_tree.children[2]),
+                                      str(parse_tree.children[0]))]])
     elif parse_tree.data == 'polynomial':
         return convert_to_desired_poly(traverse_smt_tree(parse_tree.children[0]), model.program_variables)
     elif parse_tree.data == 'expression':
@@ -234,7 +240,7 @@ def parse_smt_file(poly_text: str):
             dnf : constraint | "(" LOGICAL_SIGN dnf+ ")" 
 
 
-            constraint : "(" COMP_SIGN polynomial RATIONALNUMBER ")" 
+            constraint : "(" COMP_SIGN polynomial polynomial ")" 
             polynomial : expression
             expression :  "(" SIGN expression ")" | "(" SIGN expression expression ")" | primary
 
