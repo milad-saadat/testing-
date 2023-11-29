@@ -176,12 +176,12 @@ def traverse_smt_tree(parse_tree):
             return traverse_smt_tree(parse_tree.children[0])
         else:
             if str(parse_tree.children[0]) == "AND":
-                result_dnf = DNF([[]])
+                result_dnf = DNF([])
                 for i in range(1, len(parse_tree.children)):
                     result_dnf = result_dnf & traverse_smt_tree(parse_tree.children[i])
                 return result_dnf
             else:
-                result_dnf = DNF([[]])
+                result_dnf = DNF([])
                 for i in range(1, len(parse_tree.children)):
                     result_dnf = result_dnf | traverse_smt_tree(parse_tree.children[i])
                 return result_dnf

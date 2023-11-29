@@ -2,10 +2,13 @@
 (set-option :produce-models true)
 (declare-const x Int)
 (declare-const c_0 Int)
-(declare-const y0_3 Int)
-(declare-const y1_4 Int)
+(declare-const a Int)
+(declare-const b Int)
+(declare-const y0_5 Int)
+(declare-const y1_6 Int)
+(declare-const y2_7 Int)
 
-(assert  ( or ( and (= ( + ( + ( + (/ 1 1) ( * (- (/ 1 1)) c_0)) ( * (/ 1 1) y0_3)) ( * (/ 0 1) y1_4)) 0) (= ( + (- (/ 1 1)) ( * (/ 1 1) y1_4)) 0) (>= ( * (/ 1 1) y0_3) 0) (>= ( * (/ 1 1) y1_4) 0) )  ) )
+(assert  ( or ( and (= ( + ( + ( + ( + ( + ( + (/ 2 1) ( * (- (/ 1 1)) c_0)) ( * (/ 1 1) y0_5)) ( * (/ 0 1) y1_6)) ( * (/ 0 1) y2_7)) ( * ( * (/ 1 1) c_0) y1_6)) ( * ( * (/ 1 1) c_0) y2_7)) 0) (= ( + ( + (- (/ 1 1)) ( * (/ 1 1) y1_6)) ( * (/ 1 1) y2_7)) 0) (>= ( * (/ 1 1) y0_5) 0) (>= ( * (/ 1 1) y1_6) 0) (>= ( * (/ 1 1) y2_7) 0) )  ) )
 
 (check-sat)
-(get-value(c_0))
+(get-value(c_0 a b))
