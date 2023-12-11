@@ -200,18 +200,26 @@ def traverse_smt_tree(parse_tree):
         if len(parse_tree.children) == 1:
             return traverse_smt_tree(parse_tree.children[0])
         elif len(parse_tree.children) == 2:
-            if str(parse_tree.children[0]) == '+' :
+            if str(parse_tree.children[0]) == '+':
                 return traverse_smt_tree(parse_tree.children[1])
             elif str(parse_tree.children[0]) == '-':
                 return -traverse_smt_tree(parse_tree.children[1])
         elif len(parse_tree.children) == 3:
 
-            if str(parse_tree.children[0]) == '+' :
+            if str(parse_tree.children[0]) == '+':
                 return traverse_smt_tree(parse_tree.children[1]) + traverse_smt_tree(parse_tree.children[2])
             elif str(parse_tree.children[0]) == '-':
                 return traverse_smt_tree(parse_tree.children[1]) - traverse_smt_tree(parse_tree.children[2])
             elif str(parse_tree.children[0]) == '*':
                 return traverse_smt_tree(parse_tree.children[1]) * traverse_smt_tree(parse_tree.children[2])
+        else:
+            poly = traverse_smt_tree(parse_tree.children[1])
+            for i in range(2, len(parse_tree.children)):
+                if str(parse_tree.children[0]) == '+':
+                    poly = poly + traverse_smt_tree(parse_tree.children[i])
+                else:
+                    poly = poly * traverse_smt_tree(parse_tree.children[i])
+            return poly
     elif parse_tree.data == 'primary':
         if parse_tree.children[0].type == 'RATIONALNUMBER':
             return Solver.get_constant_polynomial(model.template_variables + model.program_variables,
@@ -242,7 +250,7 @@ def parse_smt_file(poly_text: str):
 
             constraint : "(" COMP_SIGN polynomial polynomial ")" 
             polynomial : expression
-            expression :  "(" SIGN expression ")" | "(" SIGN expression expression ")" | primary
+            expression :  "(" SIGN expression ")" | "(" SIGN expression+ ")" | primary
 
             primary : VAR | RATIONALNUMBER 
 
