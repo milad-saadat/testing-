@@ -76,13 +76,12 @@ class Putinar:
         :param max_d: maximum degree of the generated template
         :return: polynomial represents the sum-of-square template and corresponding constraints.
         """
-        monoid = np.array(Putinar.get_monoids(self.variables, math.ceil(max_d / 2))).reshape(1, -1)
+        monoid = np.array(Putinar.get_monoids(self.variables, (max_d // 2))).reshape(1, -1)
         semi_definite_matrix, constraint = self.get_lower_triangular_matrix(monoid.shape[1])
         poly_with_more_degree = np.matmul(np.matmul(monoid, semi_definite_matrix), monoid.T)[0][0]
         monomials = []
         for monomial in poly_with_more_degree.monomials:
-            if sum(monomial.degrees) <= max_d:
-                monomials.append(monomial)
+            monomials.append(monomial)
         return Polynomial(poly_with_more_degree.variables, monomials), constraint
 
     def get_poly_sum(self, max_d:int) -> (Polynomial, [CoefficientConstraint]):

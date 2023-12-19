@@ -288,22 +288,23 @@ class PositiveModel:
                 new_name.append('cons-' + var.name)
 
             input_of_solver = '(set-option :produce-unsat-cores true)\n'
-            input_of_solver += (Solver.smt_declare_variable_phase(all_constraint, real_values))
+            input_of_solver += (Solver.smt_declare_variable_phase(all_constraint, real_values, self.template_variables + self.program_variables))
             input_of_solver += (Solver.convert_constraints_to_smt_format(generated_constraint, new_name))
-            input_of_solver += (Solver.convert_constraints_to_smt_format(all_constraint))
+            input_of_solver += (Solver.convert_constraints_to_smt_format(all_constraint + self.preconditions))
             input_of_solver += '\n(check-sat)\n(get-unsat-core)\n'
             f = open(saving_path, "w")
             f.write(input_of_solver)
             f.close()
-
             output = subprocess.getoutput(f"{solver_path} {saving_path}")
-
             sat = output.split()[0]
             core = output.replace('(', ' ').replace(')', ' ').split()[1:]
 
             os.remove(saving_path)
             if sat == 'sat':
                 return generated_constraint + all_constraint
+
+            if len(core) == 0:
+                return all_constraint
             for name in core:
                 name = name.strip()[5:]
                 for var in template_variables:
