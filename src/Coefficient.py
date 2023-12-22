@@ -100,7 +100,7 @@ class Element:
                 preorder = f'(- (/ {-self.constant.numerator} {self.constant.denominator}))'
         if len(self.variables) == 0:
             return preorder
-        preorder = '( * ' + preorder + ' '
+        preorder = '(* 1 ' + preorder + ' '
         for var in self.variables:
             preorder += str(var) + ' '
         preorder += ' )'
@@ -208,7 +208,7 @@ class Coefficient:
             return '0'
         if len(self.elements) == 1:
             self.elements[0].convert_to_preorder
-        preorder = '( + '
+        preorder = '(+ 0 '
 
         for i in range(0, len(self.elements)):
             preorder += self.elements[i].convert_to_preorder() + ' '
