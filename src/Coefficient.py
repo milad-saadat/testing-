@@ -88,12 +88,22 @@ class Element:
 
         :return: string in preorder format of the class.
         """
-        preorder = f'(/ {self.constant.numerator} {self.constant.denominator})'
-        if self.constant < 0:
-            preorder = f'(- (/ {-self.constant.numerator} {self.constant.denominator}))'
-
+        if self.constant == 0:
+            return ''
+        if self.constant.denominator == 1 :
+            preorder = str(self.constant.numerator)
+            if self.constant < 0:
+                preorder = f'(- {-self.constant.numerator})'
+        else:
+            preorder = f'(/ {self.constant.numerator} {self.constant.denominator})'
+            if self.constant < 0:
+                preorder = f'(- (/ {-self.constant.numerator} {self.constant.denominator}))'
+        if len(self.variables) == 0:
+            return preorder
+        preorder = '( * ' + preorder + ' '
         for var in self.variables:
-            preorder = '( * ' + preorder + ' ' + str(var) + ')'
+            preorder += str(var) + ' '
+        preorder += ' )'
         return preorder
 
 
@@ -196,7 +206,11 @@ class Coefficient:
         """
         if len(self.elements) == 0:
             return '0'
-        preorder = self.elements[0].convert_to_preorder()
-        for i in range(1, len(self.elements)):
-            preorder = '( + ' + preorder + ' ' + self.elements[i].convert_to_preorder() + ')'
+        if len(self.elements) == 1:
+            self.elements[0].convert_to_preorder
+        preorder = '( + '
+
+        for i in range(0, len(self.elements)):
+            preorder += self.elements[i].convert_to_preorder() + ' '
+        preorder += ')'
         return preorder

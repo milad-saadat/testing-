@@ -80,8 +80,13 @@ class Putinar:
         semi_definite_matrix, constraint = self.get_lower_triangular_matrix(monoid.shape[1])
         poly_with_more_degree = np.matmul(np.matmul(monoid, semi_definite_matrix), monoid.T)[0][0]
         monomials = []
-        for monomial in poly_with_more_degree.monomials:
-            monomials.append(monomial)
+        for i, monomial in enumerate(poly_with_more_degree.monomials):
+            new_poly = Solver.get_variable_polynomial(self.variables, f't_{i}', 'eta_generated_for_sum_of_square') \
+                 * Solver.get_degree_polynomial(self.variables, monomial.degrees)
+            constraint.append(
+                CoefficientConstraint(new_poly.monomials[0].coefficient - monomial.coefficient, '=')
+            )
+            monomials.append(new_poly.monomials[0])
         return Polynomial(poly_with_more_degree.variables, monomials), constraint
 
     def get_poly_sum(self, max_d:int) -> (Polynomial, [CoefficientConstraint]):

@@ -80,11 +80,13 @@ class Monomial:
 
         :return: string in preorder format of the class.
         """
-        preorder = self.coefficient.convert_to_preorder()
+        preorder = '( * '
+        preorder += self.coefficient.convert_to_preorder()
 
         for i, var in enumerate(self.variables):
             for _ in range(self.degrees[i]):
-                preorder = '( * ' + preorder + ' ' + str(var)  +' )'
+                preorder +=  str(var)
+        preorder += ' )'
         return preorder
 
 
@@ -211,7 +213,10 @@ class Polynomial:
         """
         if len(self.monomials) == 0:
             return '0'
-        preorder = self.monomials[0].convert_to_preorder()
-        for i in range(1, len(self.monomials)):
-            preorder = '( + ' + preorder + ' ' + self.monomials[i].convert_to_preorder() + ')'
+        if len(self.monomials) == 1:
+            return self.monomials[0].convert_to_preorder()
+        preorder = '( + '
+        for i in range(0, len(self.monomials)):
+            preorder +=  self.monomials[i].convert_to_preorder() + ' '
+        preorder += ' )'
         return preorder
