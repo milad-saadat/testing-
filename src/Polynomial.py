@@ -80,7 +80,7 @@ class Monomial:
 
         :return: string in preorder format of the class.
         """
-        preorder = '( * '
+        preorder = '( * 1 '
         preorder += self.coefficient.convert_to_preorder()
 
         for i, var in enumerate(self.variables):
@@ -215,7 +215,7 @@ class Polynomial:
             return '0'
         if len(self.monomials) == 1:
             return self.monomials[0].convert_to_preorder()
-        preorder = '( + '
+        preorder = '( + 0 '
         for i in range(0, len(self.monomials)):
             preorder +=  self.monomials[i].convert_to_preorder() + ' '
         preorder += ' )'
