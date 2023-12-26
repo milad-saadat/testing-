@@ -3,32 +3,27 @@ import time
 import subprocess
 
 #subprocess.run(["ls"])
-from os import listdir
-from os.path import isfile, join
-fileName = './inputs/'
-onlyfiles = [f for f in listdir(fileName) if isfile(join(fileName, f))]
+import os
+fileName = sys.argv[1]
+base=os.path.basename(fileName)
+config=f"configs/{fileName}"
 
-index=0
-for file in sorted(onlyfiles):
-	for solver_name in ['mathsat', 'z3', 'bclt'] :
-		index+=1
-		print(str(index)+": "+file)
-		output_name = file + "_"+solver_name+ '.out'
-		script = f"""#!/bin/bash
+
+script = f"""#!/bin/bash
 #
 #-------------------------------------------------------------
 #running a shared memory (multithreaded) job over multiple CPUs
 #-------------------------------------------------------------
 #
-#SBATCH --job-name={sys.argv[1]}-{file}
-#SBATCH --output={sys.argv[1]}/{output_name}
+#SBATCH --job-name={base}
+#SBATCH --output=outputs/{fileName}
 #
 #Number of CPU cores to use within one node
 #SBATCH -c 1
 #
 #Define the number of hours the job should run. 
 #Maximum runtime is limited to 10 days, ie. 240 hours
-#SBATCH --time=00:30:00
+#SBATCH --time=01:00:00
 #
 #Define the amount of RAM used by your job in GigaBytes
 #In shared memory applications this is shared among multiple CPUs
@@ -52,16 +47,17 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 #load the respective software module you intend to use
 #
 module load gmp/6.2.1
+pip install numpy
 
 #run the respective binary through SLURM's srun
 
 
-python main.py ./{fileName}{file} {solver_name}/
+./polyHorn -smt {fileName} {config}
 	"""
 
-		f = open("tmp_run", "w")
-		f.write(script)
-		f.close()
-		subprocess.run(["sbatch", "tmp_run"])
-		time.sleep(0.1)
+f = open("tmp_run", "w")
+f.write(script)
+f.close()
+subprocess.run(["sbatch", "tmp_run"])
+time.sleep(0.1)
 		

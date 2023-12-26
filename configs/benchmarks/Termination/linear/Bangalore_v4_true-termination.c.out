@@ -1,0 +1,18 @@
+
+{
+    "model_name": "farkas",
+    "get_SAT": true,
+    "get_UNSAT": false,
+    "get_strict": false,
+    "max_d_of_SAT": 1,
+    "max_d_of_UNSAT": 0,
+    "max_d_of_strict": 0,
+    "degree_of_generated_var": 0,
+    "solver_name": "mathsat",
+    "temp_path": "work/benchmarks/Termination/linear/Bangalore_v4_true-termination.c.out.smt2",
+    "solver_path": "default",
+    "core_iteration_heuristic": false,
+    "constant_heuristic": false,
+    "real_values": false
+}
+      
