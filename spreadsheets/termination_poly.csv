@@ -1,0 +1,335 @@
+2Nested_false-termination.c.out, False, 
+2Nested_true-termination.c.out, False, 
+4NestedWith3Variables_true-termination.c.out, False, 
+AliasDarteFeautrierGonnord-SAS2010-Fig1_true-termination.c.out, True, 3700.0
+AliasDarteFeautrierGonnord-SAS2010-Fig2a_true-termination.c.out, True, 1139.0
+AliasDarteFeautrierGonnord-SAS2010-Fig2b_true-termination.c.out, True, 6462.0
+AliasDarteFeautrierGonnord-SAS2010-complex_true-termination.c.out, False, 
+AliasDarteFeautrierGonnord-SAS2010-counterex1a_true-termination.c.out, False, 
+AliasDarteFeautrierGonnord-SAS2010-counterex1b_true-termination.c.out, True, 4451.0
+AliasDarteFeautrierGonnord-SAS2010-cousot9_true-termination.c.out, True, 1577.0
+AliasDarteFeautrierGonnord-SAS2010-exmini_true-termination.c.out, True, 1417.0
+AliasDarteFeautrierGonnord-SAS2010-loops_true-termination.c.out, False, 
+AliasDarteFeautrierGonnord-SAS2010-ndecr_true-termination.c.out, True, 1102.0
+AliasDarteFeautrierGonnord-SAS2010-nestedLoop_true-termination.c.out, False, 
+AliasDarteFeautrierGonnord-SAS2010-random1d_true-termination.c.out, True, 28414.0
+AliasDarteFeautrierGonnord-SAS2010-random2d_true-termination.c.out, False, 
+AliasDarteFeautrierGonnord-SAS2010-rsd_true-termination.c.out, True, 2301.0
+AliasDarteFeautrierGonnord-SAS2010-speedFails4_true-termination.c.out, False, 
+AliasDarteFeautrierGonnord-SAS2010-speedpldi2_true-termination.c.out, True, 1497.0
+AliasDarteFeautrierGonnord-SAS2010-speedpldi3_true-termination.c.out, True, 1911.0
+AliasDarteFeautrierGonnord-SAS2010-speedpldi4_true-termination.c.out, True, 1183.0
+AliasDarteFeautrierGonnord-SAS2010-terminate_true-termination.c.out, True, 971.0
+AliasDarteFeautrierGonnord-SAS2010-wcet2_true-termination.c.out, True, 1032.0
+AliasDarteFeautrierGonnord-SAS2010-while2_true-termination.c.out, False, 
+AliasDarteFeautrierGonnord-SAS2010-wise_true-termination.c.out, True, 708.0
+AlternDiv.c.out, False, 
+AlternDivWide.c.out, False, 
+AlternDivWidening.c.out, False, 
+AlternKonv.c.out, False, 
+Avery-FLOPS2006-Table1_true-termination.c.out, True, 7924.0
+Bangalore_false-termination.c.out, False, 
+Bangalore_true-termination.c.out, True, 582.0
+Bangalore_v2_false-termination.c.out, False, 
+Bangalore_v3_false-termination.c.out, False, 
+Bangalore_v4_true-termination.c.out, True, 700.0
+Ben-Amram-LMCS2010-Ex2.3_true-termination.c.out, False, 
+Benghazi_nondet_true-termination.c.out, False, 
+Benghazi_true-termination.c.out, False, 
+BradleyMannaSipma-CAV2005-Fig1-modified_false-termination.c.out, False, 
+BradleyMannaSipma-CAV2005-Fig1_true-termination.c.out, True, 87318.0
+BradleyMannaSipma-ICALP2005-Fig1_true-termination.c.out, True, 2475.0
+BrockschmidtCookFuhs-CAV2013-Fig1_true-termination.c.out, True, 2442.0
+BrockschmidtCookFuhs-CAV2013-Fig9a_true-termination.c.out, True, 3243.0
+BrockschmidtCookFuhs-CAV2013-Introduction_true-termination.c.out, True, 484.0
+Cairo_nondet_false-termination.c.out, False, 
+Cairo_step2_false-termination.c.out, False, 
+Cairo_true-termination.c.out, True, 389.0
+ChawdharyCookGulwaniSagivYang-ESOP2008-aaron12_true-termination.c.out, False, 
+ChawdharyCookGulwaniSagivYang-ESOP2008-aaron1_true-termination.c.out, False, 
+ChawdharyCookGulwaniSagivYang-ESOP2008-aaron4_true-termination.c.out, False, 
+ChawdharyCookGulwaniSagivYang-ESOP2008-aaron6_true-termination.c.out, False, 
+ChawdharyCookGulwaniSagivYang-ESOP2008-random1d_true-termination.c.out, True, 28344.0
+ChawdharyCookGulwaniSagivYang-ESOP2008-random2d_true-termination.c.out, False, 
+ChenCookFuhsNimkarOHearn-TACAS2014-Introduction_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex1.01_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex1.02_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex1.03_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex1.04_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex1.05_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.01_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.02_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.03_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.04_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.06_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.07_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.08_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.09_true-termination.c.out, True, 896.0
+ChenFlurMukhopadhyay-SAS2012-Ex2.10_true-termination.c.out, True, 705.0
+ChenFlurMukhopadhyay-SAS2012-Ex2.11_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.12_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.13_true-termination.c.out, True, 385.0
+ChenFlurMukhopadhyay-SAS2012-Ex2.14_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.15_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.16_true-termination.c.out, True, 369.0
+ChenFlurMukhopadhyay-SAS2012-Ex2.17_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.18_true-termination.c.out, True, 342.0
+ChenFlurMukhopadhyay-SAS2012-Ex2.19_true-termination.c.out, True, 362.0
+ChenFlurMukhopadhyay-SAS2012-Ex2.20_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex2.21_true-termination.c.out, True, 359.0
+ChenFlurMukhopadhyay-SAS2012-Ex2.22_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex3.01_true-termination.c.out, True, 445.0
+ChenFlurMukhopadhyay-SAS2012-Ex3.02_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex3.03_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex3.04_true-termination.c.out, True, 561.0
+ChenFlurMukhopadhyay-SAS2012-Ex3.05_true-termination.c.out, True, 511.0
+ChenFlurMukhopadhyay-SAS2012-Ex3.06_false-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex3.07_true-termination.c.out, True, 647.0
+ChenFlurMukhopadhyay-SAS2012-Ex3.08_true-termination.c.out, True, 1106.0
+ChenFlurMukhopadhyay-SAS2012-Ex3.09_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Ex3.10_true-termination.c.out, True, 546.0
+ChenFlurMukhopadhyay-SAS2012-Ex4.01_true-termination.c.out, False, 
+ChenFlurMukhopadhyay-SAS2012-Fig1_true-termination.c.out, True, 428.0
+Choose.c.out, False, 
+ChooseLife.c.out, False, 
+ColonSipma-TACAS2001-Fig1_true-termination.c.out, True, 829.0
+ComplInterv.c.out, False, 
+ComplInterv2.c.out, False, 
+ComplInterv3.c.out, False, 
+ComplxStruc.c.out, False, 
+ConvLower.c.out, False, 
+CookSeeZuleger-TACAS2013-Fig1_true-termination.c.out, False, 
+CookSeeZuleger-TACAS2013-Fig7a_true-termination.c.out, False, 
+CookSeeZuleger-TACAS2013-Fig7b_true-termination.c.out, False, 
+CookSeeZuleger-TACAS2013-Fig8a-modified_true-termination.c.out, False, 
+CookSeeZuleger-TACAS2013-Fig8a_true-termination.c.out, False, 
+CookSeeZuleger-TACAS2013-Fig8b_true-termination.c.out, False, 
+Copenhagen_disj_true-termination.c.out, True, 561.0
+Copenhagen_true-termination.c.out, True, 447.0
+Cousot.c.out, False, 
+DivMinus.c.out, True, 576.0
+DivMinus2.c.out, True, 46086.0
+DivWithoutMinus.c.out, False, 
+DoubleNeg.c.out, False, 
+Et1.c.out, False, 
+Et2.c.out, False, 
+Et4.c.out, False, 
+Even.c.out, False, 
+Ex01.c.out, False, 
+Ex02.c.out, False, 
+Ex03.c.out, False, 
+Ex04.c.out, False, 
+Ex05.c.out, True, 181.0
+Ex06.c.out, False, 
+Ex07.c.out, False, 
+Ex08.c.out, False, 
+Factorial.c.out, False, 
+Fibonacci.c.out, False, 
+Flip.c.out, False, 
+Flip2.c.out, False, 
+GCD.c.out, False, 
+GCD2.c.out, False, 
+GCD3.c.out, True, 67516.0
+GCD4.c.out, True, 8131.0
+Gauss.c.out, False, 
+GopanReps-CAV2006-Fig1a_true-termination.c.c.out, True, 924.0
+Gothenburg_true-termination.c.out, True, 4155.0
+Gothenburg_v2_true-termination.c.out, True, 4618.0
+GulavaniGulwani-CAV2008-Fig1a_true-termination.c.out, True, 1410.0
+GulavaniGulwani-CAV2008-Fig1b_true-termination.c.out, True, 2383.0
+GulavaniGulwani-CAV2008-Fig1c_true-termination.c.out, True, 1068.0
+GulwaniJainKoskinen-PLDI2009-Fig1_true-termination.c.out, False, 
+Hanoi_2vars_false-termination.c.out, False, 
+Hanoi_3vars_false-termination.c.out, False, 
+Hanoi_plus_false-termination.c.out, False, 
+HeizmannHoenickeLeikePodelski-ATVA2013-Fig1_true-termination.c.out, True, 616.0
+HeizmannHoenickeLeikePodelski-ATVA2013-Fig4_true-termination.c.out, True, 506.0
+HeizmannHoenickeLeikePodelski-ATVA2013-Fig6_true-termination.c.out, False, 
+HeizmannHoenickeLeikePodelski-ATVA2013-Fig8_true-termination.c.out, False, 
+HeizmannHoenickeLeikePodelski-ATVA2013-Fig9_true-termination.c.out, False, 
+IntPath.c.out, False, 
+KroeningSharyginaTsitovichWintersteiger-CAV2010-Ex_true-termination.c.out, True, 483.0
+LarrazOliverasRodriguez-CarbonellRubio-FMCAD2013-Fig1_true-termination.c.out, False, 
+Lcm.c.out, False, 
+LeikeHeizmann-TACAS2014-Ex1_true-termination.c.out, True, 385.0
+LeikeHeizmann-TACAS2014-Ex7_true-termination.c.out, True, 345.0
+LeikeHeizmann-TACAS2014-Ex8_true-termination.c.out, False, 
+LeikeHeizmann-TACAS2014-Ex9_true-termination.c.out, True, 877.0
+LeikeHeizmann-TACAS2014-Fig1_true-termination.c.out, False, 
+LeikeHeizmann-WST2014-Ex5_false-termination.c.out, False, 
+LeikeHeizmann-WST2014-Ex6_false-termination.c.out, False, 
+Lobnya-Boolean-Reordered_true-termination.c.out, False, 
+Log.c.out, True, 7858.0
+LogAG.c.out, True, 1966.0
+LogMult.c.out, False, 
+Loop.c.out, False, 
+Madrid_false-termination.c.out, False, 
+Marbie1.c.out, False, 
+Marbie2.c.out, False, 
+Masse-VMCAI2014-Ex6_true-termination.c.out, True, 699.0
+Masse-VMCAI2014-Fig1a_true-termination.c.out, False, 
+Masse-VMCAI2014-Fig1b_true-termination.c.out, False, 
+McCarthy91_Iteration_true-termination.c.out, True, 11761.0
+McCarthyIterative.c.out, True, 11776.0
+MenloPark_true-termination.c.out, True, 616.0
+Middle.c.out, False, 
+MinusBuiltIn.c.out, True, 2092.0
+MinusMin.c.out, True, 1696.0
+MinusUserDefined.c.out, True, 10118.0
+MirrorInterv.c.out, False, 
+MirrorIntervSim.c.out, False, 
+Mysore_false-termination.c.out, False, 
+Mysore_true-termination.c.out, True, 637.0
+NO_00.c.out, False, 
+NO_01.c.out, False, 
+NO_02.c.out, False, 
+NO_03.c.out, False, 
+NO_04.c.out, False, 
+NO_10.c.out, False, 
+NO_12.c.out, False, 
+NO_13.c.out, False, 
+NO_21.c.out, False, 
+NO_22.c.out, False, 
+NO_23.c.out, False, 
+NO_24.c.out, False, 
+NarrowKonv.c.out, False, 
+Narrowing.c.out, False, 
+Nested.c.out, True, 1177.0
+NonTermination1_false-termination.c.out, False, 
+NonTermination2_false-termination.c.out, False, 
+NonTermination4_false-termination.c.out, False, 
+NonTerminationSimple2_false-termination.c.out, False, 
+NonTerminationSimple3_false-termination.c.out, False, 
+NonTerminationSimple4_false-termination.c.out, False, 
+NonTerminationSimple5_false-termination.c.out, False, 
+NonTerminationSimple6_false-termination.c.out, False, 
+NonTerminationSimple7_false-termination.c.out, False, 
+NonTerminationSimple8_false-termination.c.out, False, 
+NonTerminationSimple9_false-termination.c.out, False, 
+NoriSharma-FSE2013-Fig7_true-termination.c.out, True, 25136.0
+NoriSharma-FSE2013-Fig8_true-termination.c.out, False, 
+Nyala-2lex_true-termination.c.out, False, 
+Overflow.c.out, False, 
+Parallel_true-termination.c.out, True, 454.0
+PastaA1.c.out, True, 3732.0
+PastaA10.c.out, False, 
+PastaA4.c.out, True, 303.0
+PastaA5.c.out, True, 312.0
+PastaA6.c.out, True, 416.0
+PastaA7.c.out, True, 571.0
+PastaA8.c.out, True, 373.0
+PastaA9.c.out, True, 1175.0
+PastaB1.c.out, True, 577.0
+PastaB11.c.out, True, 858.0
+PastaB14.c.out, True, 6761.0
+PastaB15.c.out, True, 1854.0
+PastaB16.c.out, True, 1571.0
+PastaB17.c.out, True, 3888.0
+PastaB2.c.out, True, 554.0
+PastaB3.c.out, True, 581.0
+PastaB4.c.out, True, 677.0
+PastaB6.c.out, True, 535.0
+PastaB7.c.out, True, 488.0
+PastaC1.c.out, True, 584.0
+PastaC10.c.out, False, 
+PastaC2.c.out, True, 445.0
+PastaC3.c.out, True, 715.0
+PastaC7.c.out, True, 732.0
+PastaC9.c.out, False, 
+Piecewise_true-termination.c.out, False, 
+PlusSwap.c.out, True, 1276.0
+PodelskiRybalchenko-LICS2004-Fig1_true-termination.c.out, True, 572.0
+PodelskiRybalchenko-LICS2004-Fig2-TACAS2011-Fig3_true-termination.c.out, False, 
+PodelskiRybalchenko-TACAS2011-Fig1_true-termination.c.out, True, 273.0
+PodelskiRybalchenko-TACAS2011-Fig2_true-termination.c.out, True, 725.0
+PodelskiRybalchenko-TACAS2011-Fig4_true-termination.c.out, False, 
+PodelskiRybalchenko-VMCAI2004-Ex1_true-termination.c.out, False, 
+PodelskiRybalchenko-VMCAI2004-Ex2_true-termination.c.out, False, 
+Pure2Phase_true-termination.c.out, False, 
+Pure3Phase_true-termination.c.out, False, 
+Rotation180_false-termination.c.out, False, 
+Sequence.c.out, True, 902.0
+Singapore_plus_false-termination.c.out, False, 
+Singapore_true-termination.c.out, True, 653.0
+Singapore_v1_false-termination.c.out, False, 
+Singapore_v2_false-termination.c.out, False, 
+Stockholm_true-termination.c.out, True, 774.0
+Sunset.c.out, False, 
+Swingers.c.out, False, 
+TelAviv-Amir-Minimum_true-termination.c.out, False, 
+Thun_true-termination.c.out, True, 465.0
+Toulouse-BranchesToLoop_true-termination.c.out, False, 
+Toulouse-MultiBranchesToLoop_true-termination.c.out, False, 
+TrueDiv.c.out, False, 
+TwoFloatInterv.c.out, False, 
+UpAndDown.c.out, False, 
+UpAndDownIneq.c.out, False, 
+Urban-WST2013-Fig1_false-termination.c.out, False, 
+Urban-WST2013-Fig2-modified1000_true-termination.c.out, True, 701.0
+Urban-WST2013-Fig2_true-termination.c.out, True, 590.0
+UrbanMine-ESOP2014-Fig3_true-termination.c.out, False, 
+Velroyen_false-termination.c.out, False, 
+Waldkirch_true-termination.c.out, True, 331.0
+WhileDecr.c.out, True, 266.0
+WhileFalse_true-termination.c.out, True, 220.0
+WhileIncr.c.out, False, 
+WhileIncrPart.c.out, False, 
+WhileNested.c.out, False, 
+WhileNestedOffset.c.out, False, 
+WhilePart.c.out, False, 
+WhileSingle.c.out, False, 
+WhileTrue.c.out, False, 
+WhileTrue_false-termination.c.out, True, 549.0
+aaron2_true-termination.c.out, True, 1077.0
+aaron3_true-termination.c.out, False, 
+collatz.c.out, False, 
+easy1_true-termination.c.out, True, 1751.0
+easy2_true-termination.c.out, True, 700.0
+gcd1_true-termination.c.out, True, 329416.0
+genady_true-termination.c.out, True, 667.0
+min_rf_true-termination.c.out, False, 
+svcomp_a.01.c.out, False, 
+svcomp_a.04.c.out, True, 587.0
+svcomp_a.05.c.out, True, 592.0
+svcomp_a.06.c.out, True, 1764.0
+svcomp_a.07.c.out, True, 1392.0
+svcomp_a.08.c.out, True, 1519.0
+svcomp_a.09_assume.c.out, True, 677.0
+svcomp_a.10.c.out, False, 
+svcomp_b.01.c.out, True, 728.0
+svcomp_b.02.c.out, True, 556.0
+svcomp_b.03-no-inv_assume.c.out, True, 534.0
+svcomp_b.03_assume.c.out, True, 366.0
+svcomp_b.04.c.out, True, 411.0
+svcomp_b.05.c.out, False, 
+svcomp_b.06.c.out, True, 1442.0
+svcomp_b.07.c.out, True, 1135.0
+svcomp_b.09-no-inv_assume.c.out, True, 1154661.0
+svcomp_b.09_assume.c.out, True, 58043.0
+svcomp_b.10.c.out, True, 787.0
+svcomp_b.11.c.out, True, 2349.0
+svcomp_b.12.c.out, True, 3571.0
+svcomp_b.13.c.out, True, 2924.0
+svcomp_b.14.c.out, True, 3660.0
+svcomp_b.15.c.out, True, 7540.0
+svcomp_b.16.c.out, True, 2353.0
+svcomp_b.17.c.out, True, 7888.0
+svcomp_b.18.c.out, False, 
+svcomp_c.01-no-inv.c.out, False, 
+svcomp_c.01_assume.c.out, True, 602.0
+svcomp_c.02.c.out, True, 3871.0
+svcomp_c.03.c.out, True, 3702.0
+svcomp_c.07.c.out, True, 3434.0
+svcomp_c.08.c.out, True, 1988.0
+svcomp_easySum.c.out, True, 524.0
+svcomp_ex1.c.out, True, 959.0
+svcomp_ex2.c.out, False, 
+svcomp_ex3a.c.out, False, 
+svcomp_ex3b.c.out, False, 
+svcomp_fermat.c.out, True, 8611.0
+svcomp_flag.c.out, False, 
+svcomp_java_AG313.c.out, True, 5940.0
+svcomp_java_Break.c.out, True, 364.0
+svcomp_java_Continue1.c.out, True, 402.0
+svcomp_java_Nested.c.out, True, 1528.0
+svcomp_java_Sequence.c.out, True, 1144.0
