@@ -139,7 +139,7 @@ class PositiveModel:
             all_constraint = PositiveModel.remove_equality_constraints(all_constraint)
         if core_iteration_heuristic:
             all_constraint = self.core_iteration(all_constraint, solver_path=solver_path,
-                                                 real_values=real_values)
+                                                 real_values=real_values, saving_path=temp_path)
 
         solver_option = Constant.options[solver_name]
 

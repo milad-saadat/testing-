@@ -37,14 +37,10 @@ def traverse_readable_tree(parse_tree):
     elif parse_tree.data == 'hornclause':
         lhs = traverse_readable_tree(parse_tree.children[0])
         rhs = traverse_readable_tree(parse_tree.children[1])
-        # print(lhs)
-        # print('->')
-        # print(rhs)
         model.add_paired_constraint(lhs, rhs)
         return
     elif parse_tree.data == 'precondition':
         dnf = traverse_readable_tree(parse_tree.children[0])
-        # print(dnf)
         model.preconditions.append(dnf)
         return
     elif parse_tree.data == 'dnf':
@@ -161,14 +157,10 @@ def traverse_smt_tree(parse_tree):
     elif parse_tree.data == 'hornclause':
         lhs = traverse_smt_tree(parse_tree.children[0])
         rhs = traverse_smt_tree(parse_tree.children[1])
-        # print(lhs)
-        # print('->')
-        # print(rhs)
         model.add_paired_constraint(lhs, rhs)
         return
     elif parse_tree.data == 'precondition':
         dnf = traverse_smt_tree(parse_tree.children[0])
-        # print(dnf)
         model.preconditions.append(dnf)
         return
     elif parse_tree.data == 'dnf':
@@ -195,9 +187,15 @@ def traverse_smt_tree(parse_tree):
                     traverse_smt_tree(parse_tree.children[2]),
                                       str(parse_tree.children[0]))]])
     elif parse_tree.data == 'polynomial':
+        print(convert_to_desired_poly(traverse_smt_tree(parse_tree.children[0]), model.program_variables))
         return convert_to_desired_poly(traverse_smt_tree(parse_tree.children[0]), model.program_variables)
     elif parse_tree.data == 'expression':
+
         if len(parse_tree.children) == 1:
+            if parse_tree.children[0].data == "fraction":
+                return Solver.get_constant_polynomial(model.template_variables + model.program_variables,
+                                                      traverse_smt_tree(parse_tree.children[0])
+                                                      )
             return traverse_smt_tree(parse_tree.children[0])
         elif len(parse_tree.children) == 2:
             if str(parse_tree.children[0]) == '+':
@@ -221,10 +219,11 @@ def traverse_smt_tree(parse_tree):
                     poly = poly * traverse_smt_tree(parse_tree.children[i])
             return poly
     elif parse_tree.data == 'primary':
-        if parse_tree.children[0].type == 'RATIONALNUMBER':
+        if type(parse_tree.children[0]) is lark.tree.Tree:
             return Solver.get_constant_polynomial(model.template_variables + model.program_variables,
-                                                  str(parse_tree.children[0]))
-        else:
+                                                   traverse_smt_tree(parse_tree.children[0]))
+
+        if parse_tree.children[0].type == 'VAR':
             deg = 1
             if len(parse_tree.children) > 1:
                 deg = int(parse_tree.children[1])
@@ -232,6 +231,14 @@ def traverse_smt_tree(parse_tree):
             degrees[find_index_of_variable(str(parse_tree.children[0]),
                                            model.template_variables + model.program_variables)] = deg
             return Solver.get_degree_polynomial(model.template_variables + model.program_variables, degrees)
+
+    elif parse_tree.data == 'fraction':
+        return str(traverse_smt_tree(parse_tree.children[0])) + '/' + str(traverse_smt_tree(parse_tree.children[1]))
+    elif parse_tree.data == 'rationalnumber':
+        if len(parse_tree.children) == 1:
+            return int(str(parse_tree.children[0]))
+        if len(parse_tree.children) == 2:
+            return int(str(parse_tree.children[0]) + str(parse_tree.children[1]) )
 
 
 def parse_smt_file(poly_text: str):
@@ -250,17 +257,17 @@ def parse_smt_file(poly_text: str):
 
             constraint : "(" COMP_SIGN polynomial polynomial ")" 
             polynomial : expression
-            expression :  "(" SIGN expression ")" | "(" SIGN expression+ ")" | primary
+            expression : "(/" fraction ")" | primary | "(" SIGN expression ")" | "(" SIGN expression+ ")"
 
-            primary : VAR | RATIONALNUMBER 
-
+            primary : VAR | rationalnumber 
+            
             LOGICAL_SIGN : "AND" | "OR" 
             COMP_SIGN : ">" | "=" | "<" | ">=" | "<="
             SIGN : "+" | "-" | "*"
             VAR: /[a-zA-Z0-9_]/+
             VAR_TYPE: "template" | "program" 
-            RATIONALNUMBER : /[+-]?/ NUMBER ("/" NUMBER)?
-
+            rationalnumber : NUMBER | "(" SIGN NUMBER ")"
+            fraction: rationalnumber  rationalnumber 
 
             %import common.NUMBER
             %import common.NEWLINE -> _NL
