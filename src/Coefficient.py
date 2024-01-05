@@ -89,7 +89,7 @@ class Element:
         :return: string in preorder format of the class.
         """
         if self.constant == 0:
-            return ''
+            return '0'
         if self.constant.denominator == 1 :
             preorder = str(self.constant.numerator)
             if self.constant < 0:
@@ -207,10 +207,17 @@ class Coefficient:
         if len(self.elements) == 0:
             return '0'
         if len(self.elements) == 1:
-            self.elements[0].convert_to_preorder
+            return self.elements[0].convert_to_preorder()
         preorder = '(+ 0 '
-
+        not_zero = False
         for i in range(0, len(self.elements)):
+            if self.elements[i].constant == 0:
+                continue
+            else:
+                not_zero = True
             preorder += self.elements[i].convert_to_preorder() + ' '
         preorder += ')'
-        return preorder
+        if not_zero:
+            return preorder
+        else:
+            return '0'

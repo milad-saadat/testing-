@@ -187,7 +187,6 @@ def traverse_smt_tree(parse_tree):
                     traverse_smt_tree(parse_tree.children[2]),
                                       str(parse_tree.children[0]))]])
     elif parse_tree.data == 'polynomial':
-        print(convert_to_desired_poly(traverse_smt_tree(parse_tree.children[0]), model.program_variables))
         return convert_to_desired_poly(traverse_smt_tree(parse_tree.children[0]), model.program_variables)
     elif parse_tree.data == 'expression':
 
