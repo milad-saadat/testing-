@@ -15,7 +15,7 @@ with open(sys.argv[3], "r") as jsonfile:
 
 
 global model
-model = PositiveModel([], [],
+model = PositiveModel([],
                       data['model_name'],
                       data['get_SAT'], data['get_UNSAT'], data['get_strict'],
                       data['max_d_of_SAT'], data['max_d_of_UNSAT'], data['max_d_of_strict'],
@@ -146,19 +146,24 @@ def traverse_smt_tree(parse_tree):
     if parse_tree.data == 'start':
         for child in parse_tree.children:
             traverse_smt_tree(child)
+
+    elif parse_tree.data == 'instructions':
+        return
     elif parse_tree.data == 'declare_var':
-        if str(parse_tree.children[1]) == "template":
-            model.template_variables.append(UnknownVariable(str(parse_tree.children[0]), type_of_var='template_var'))
-        elif str(parse_tree.children[1]) == "program":
-            model.program_variables.append(UnknownVariable(str(parse_tree.children[0]), type_of_var='program_var'))
+        model.template_variables.append(UnknownVariable(str(parse_tree.children[0]), type_of_var='template_var'))
 
     elif parse_tree.data == 'assertion':
         traverse_smt_tree(parse_tree.children[0])
     elif parse_tree.data == 'hornclause':
-        lhs = traverse_smt_tree(parse_tree.children[0])
-        rhs = traverse_smt_tree(parse_tree.children[1])
-        model.add_paired_constraint(lhs, rhs)
+        model.program_variables = []
+        for i in range(len(parse_tree.children)-2):
+            traverse_smt_tree(parse_tree.children[i])
+        lhs = traverse_smt_tree(parse_tree.children[-2])
+        rhs = traverse_smt_tree(parse_tree.children[-1])
+        model.add_paired_constraint(lhs, rhs, model.program_variables)
         return
+    elif parse_tree.data == 'program_variables':
+        model.program_variables.append(UnknownVariable(str(parse_tree.children[0]), type_of_var='program_var'))
     elif parse_tree.data == 'precondition':
         dnf = traverse_smt_tree(parse_tree.children[0])
         model.preconditions.append(dnf)
@@ -167,7 +172,7 @@ def traverse_smt_tree(parse_tree):
         if len(parse_tree.children) == 1:
             return traverse_smt_tree(parse_tree.children[0])
         else:
-            if str(parse_tree.children[0]) == "AND":
+            if str(parse_tree.children[0]) == "and":
                 result_dnf = DNF([])
                 for i in range(1, len(parse_tree.children)):
                     result_dnf = result_dnf & traverse_smt_tree(parse_tree.children[i])
@@ -242,15 +247,16 @@ def traverse_smt_tree(parse_tree):
 
 def parse_smt_file(poly_text: str):
     parser = Lark(r"""
-            start : declare_var* assertion*
+            start : declare_var* assertion* instructions* 
             
-            declare_var: "(declare_var" VAR VAR_TYPE ")"
+            instructions: "(check-sat)" | "(get-model)"
+            declare_var: "(declare-const" VAR VAR_TYPE ")"
             
             assertion: "(assert" precondition  ")" | "(assert" hornclause  ")"
             precondition : dnf
 
-            hornclause : "(->" dnf dnf ")"
-
+            hornclause : "(forall" "(" program_variables* ")" "(=>" dnf dnf ")" ")"
+            program_variables : "(" VAR VAR_TYPE ")" 
             dnf : constraint | "(" LOGICAL_SIGN dnf+ ")" 
 
 
@@ -260,11 +266,11 @@ def parse_smt_file(poly_text: str):
 
             primary : VAR | rationalnumber 
             
-            LOGICAL_SIGN : "AND" | "OR" 
+            LOGICAL_SIGN : "and" | "or" 
             COMP_SIGN : ">" | "=" | "<" | ">=" | "<="
             SIGN : "+" | "-" | "*"
             VAR: /[a-zA-Z0-9_]/+
-            VAR_TYPE: "template" | "program" 
+            VAR_TYPE: "Int" | "Real" 
             rationalnumber : NUMBER | "(" SIGN NUMBER ")"
             fraction: rationalnumber  rationalnumber 
 

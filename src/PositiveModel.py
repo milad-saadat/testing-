@@ -34,7 +34,7 @@ class PositiveModel:
         preconditions ([DNF]) : list of conditions that must be satisfied independent of the horn clauses
     """
 
-    def __init__(self, template_variables_name: [str], program_variables_name: [str],
+    def __init__(self, template_variables_name: [str],
                  model_name: str, get_SAT: bool = True, get_UNSAT: bool = False, get_strict: bool = False,
                  max_d_of_SAT: int = 0, max_d_of_UNSAT: int = 0, max_d_of_strict: int = 0, degree_of_generated_var: int = 0,
                  preconditions:[DNF] = []
@@ -44,8 +44,6 @@ class PositiveModel:
         self.program_variables = []
         for name in template_variables_name:
             self.template_variables.append(UnknownVariable(name=name, type_of_var='template_var'))
-        for name in program_variables_name:
-            self.program_variables.append(UnknownVariable(name=name, type_of_var='program_var'))
 
         self.model_name = model_name
         self.get_SAT = get_SAT
@@ -57,7 +55,7 @@ class PositiveModel:
         self.degree_of_generated_var = degree_of_generated_var
         self.preconditions = preconditions
 
-    def add_paired_constraint(self, lhs: DNF, rhs: DNF):
+    def add_paired_constraint(self, lhs: DNF, rhs: DNF, program_variables):
         """ add set of horn clause constraint for lhs => rhs
 
         :param lhs: DNF form of the left hand side of that should be added.
@@ -69,7 +67,7 @@ class PositiveModel:
             rhs = DNF([rhs.literals[0]])
         for literal in lhs.literals:
             for item in rhs.literals[0]:
-                self.paired_constraint.append((literal, item))
+                self.paired_constraint.append((literal, item, program_variables))
 
     def __str__(self) -> str:
         """ convert PositiveModel to string.
@@ -85,14 +83,14 @@ class PositiveModel:
             res += '----------------------\n'
         return res
 
-    def get_polynomial(self, poly_str:str) -> Polynomial:
+    def get_polynomial(self, poly_str:str, program_variables) -> Polynomial:
         """ generate a polynomial from a given string based on the template and program variable in the class
 
         :param poly_str: input string that should be converted to a polynomial.
         :return: polynomial of the given string.
         """
-        return convert_general_string_to_poly(poly_str, self.template_variables + self.program_variables,
-                                              self.program_variables)
+        return convert_general_string_to_poly(poly_str, self.template_variables + program_variables,
+                                              program_variables)
 
     def get_generated_constraints(self) -> [DNF]:
         """ This function find the constraint for the list of the class's horn clause constraints based on the class configurations.
@@ -102,12 +100,12 @@ class PositiveModel:
         all_constraint = []
         for pair in self.paired_constraint:
             if self.model_name == Theorem.Farkas:
-                model = Farkas(self.program_variables, LHS=pair[0], RHS=pair[1])
+                model = Farkas(variables=pair[2], LHS=pair[0], RHS=pair[1])
             elif self.model_name == Theorem.Handelman:
-                model = Handelman(self.program_variables, LHS=pair[0], RHS=pair[1],
+                model = Handelman(variables=pair[2], LHS=pair[0], RHS=pair[1],
                                   max_d_for_sat=self.max_d_of_SAT, max_d_for_unsat=self.max_d_of_UNSAT)
             elif self.model_name == Theorem.Putinar:
-                model = Putinar(self.program_variables, LHS=pair[0], RHS=pair[1],
+                model = Putinar(variables=pair[2], LHS=pair[0], RHS=pair[1],
                                 max_d_for_sat=self.max_d_of_SAT, max_d_for_unsat=self.max_d_of_UNSAT,
                                 max_d_for_unsat_strict=self.max_d_of_strict,
                                 degree_for_new_var=self.degree_of_generated_var)
@@ -153,7 +151,7 @@ class PositiveModel:
 
         f = open(temp_path, "w")
         f.write(solver_option + Solver.smt_declare_variable_phase(all_constraint, real_values,
-                                                                  self.template_variables + self.program_variables) + '\n' +
+                                                                  self.template_variables) + '\n' +
                 Solver.convert_constraints_to_smt_format(all_constraint + self.preconditions) + output_command
                 )
         f.close()
@@ -288,7 +286,7 @@ class PositiveModel:
                 new_name.append('cons-' + var.name)
 
             input_of_solver = '(set-option :produce-unsat-cores true)\n'
-            input_of_solver += (Solver.smt_declare_variable_phase(all_constraint, real_values, self.template_variables + self.program_variables))
+            input_of_solver += (Solver.smt_declare_variable_phase(all_constraint, real_values, self.template_variables))
             input_of_solver += (Solver.convert_constraints_to_smt_format(generated_constraint, new_name))
             input_of_solver += (Solver.convert_constraints_to_smt_format(all_constraint + self.preconditions))
             input_of_solver += '\n(check-sat)\n(get-unsat-core)\n'

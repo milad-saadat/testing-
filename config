@@ -1,8 +1,8 @@
 {
     "model_name": "farkas",
     "get_SAT": true,
-    "get_UNSAT": true,
-    "get_strict": true,
+    "get_UNSAT": false,
+    "get_strict": false,
     "max_d_of_SAT": 1,
     "max_d_of_UNSAT": 0,
     "max_d_of_strict": 0,
@@ -12,5 +12,5 @@
     "solver_path": "default",
     "core_iteration_heuristic": false,
     "constant_heuristic": false,
-    "real_values": true
+    "real_values": false
 }
