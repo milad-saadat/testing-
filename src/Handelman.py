@@ -23,6 +23,13 @@ class Handelman:
         self.max_d_for_sat = max_d_for_sat
         self.max_d_for_unsat = max_d_for_unsat
 
+    def get_lists_with_fixed_len(self, lst, n, max_d):
+        if len(lst) == n:
+            return [lst]
+        ans = []
+        for i in range(max_d - sum(lst)+1):
+            ans = ans + self.get_lists_with_fixed_len(lst + [i], n, max_d)
+        return ans
     def get_monoids(self, max_d: int) -> ([Polynomial], [bool]):
         """ this function creates monoids of given the degree of all left hand side polynomials
 
@@ -31,15 +38,8 @@ class Handelman:
         """
         monoids = []
         is_strict = []
-        for mask in range((max_d + 1) ** (len(self.LHS))):
-            mask_copy = mask
-            degree_of_each_lhs = []
-            for i in range(len(self.LHS)):
-                degree_of_each_lhs.append(mask_copy % (max_d + 1))
-                mask_copy //= (max_d + 1)
-
-            if sum(degree_of_each_lhs) > max_d:
-                continue
+        all_degrees = self.get_lists_with_fixed_len([], len(self.LHS), max_d)
+        for degree_of_each_lhs in all_degrees:
             poly = Solver.get_constant_polynomial(self.variables, '1')
             is_the_new_monoid_strict = True
 
@@ -51,6 +51,7 @@ class Handelman:
 
             is_strict.append(is_the_new_monoid_strict)
             monoids.append(poly)
+
         return monoids, is_strict
 
     def get_poly_sum(self, max_d: int, need_strict: bool = False) -> (Polynomial, CoefficientConstraint):
