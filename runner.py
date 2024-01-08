@@ -240,10 +240,9 @@ def traverse_smt_tree(parse_tree):
         return str(traverse_smt_tree(parse_tree.children[0])) + '/' + str(traverse_smt_tree(parse_tree.children[1]))
     elif parse_tree.data == 'rationalnumber':
         if len(parse_tree.children) == 1:
-            return int(str(parse_tree.children[0]))
+            return str(parse_tree.children[0])
         if len(parse_tree.children) == 2:
-            return int(str(parse_tree.children[0]) + str(parse_tree.children[1]) )
-
+            return str(parse_tree.children[0]) + str(parse_tree.children[1])
 
 def parse_smt_file(poly_text: str):
     parser = Lark(r"""
@@ -271,7 +270,7 @@ def parse_smt_file(poly_text: str):
             SIGN : "+" | "-" | "*"
             VAR: /[a-zA-Z0-9_]/+
             VAR_TYPE: "Int" | "Real" 
-            rationalnumber : NUMBER | "(" SIGN NUMBER ")"
+            rationalnumber : NUMBER | "(" SIGN NUMBER ")" | SIGN NUMBER 
             fraction: rationalnumber  rationalnumber 
 
             %import common.NUMBER
