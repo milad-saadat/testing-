@@ -166,7 +166,11 @@ def traverse_smt_tree(parse_tree):
         model.program_variables.append(UnknownVariable(str(parse_tree.children[0]), type_of_var='program_var'))
     elif parse_tree.data == 'precondition':
         dnf = traverse_smt_tree(parse_tree.children[0])
-        model.preconditions.append(dnf)
+        if len(parse_tree.children) == 2:
+            second_dnf = traverse_smt_tree(parse_tree.children[1])
+            model.preconditions.append((dnf, second_dnf))
+        else:
+            model.preconditions.append((dnf, ))
         return
     elif parse_tree.data == 'dnf':
         if len(parse_tree.children) == 1:
@@ -252,7 +256,7 @@ def parse_smt_file(poly_text: str):
             declare_var: "(declare-const" VAR VAR_TYPE ")"
             
             assertion: "(assert" precondition  ")" | "(assert" hornclause  ")"
-            precondition : dnf
+            precondition : dnf | "(=>" dnf dnf ")" 
 
             hornclause : "(forall" "(" program_variables* ")" "(=>" dnf dnf ")" ")"
             program_variables : "(" VAR VAR_TYPE ")" 

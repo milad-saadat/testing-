@@ -152,7 +152,7 @@ class PositiveModel:
         f = open(temp_path, "w")
         f.write(solver_option + Solver.smt_declare_variable_phase(all_constraint, real_values,
                                                                   self.template_variables) + '\n' +
-                Solver.convert_constraints_to_smt_format(all_constraint + self.preconditions) + output_command
+                Solver.convert_constraints_to_smt_format(all_constraint, self.preconditions) + output_command
                 )
         f.close()
     def run_on_solver(self,temp_path:str="checking.txt", solver_name: str = 'z3', solver_path: str = "default", core_iteration_heuristic: bool = False,
@@ -287,8 +287,8 @@ class PositiveModel:
 
             input_of_solver = '(set-option :produce-unsat-cores true)\n'
             input_of_solver += (Solver.smt_declare_variable_phase(all_constraint, real_values, self.template_variables))
-            input_of_solver += (Solver.convert_constraints_to_smt_format(generated_constraint, new_name))
-            input_of_solver += (Solver.convert_constraints_to_smt_format(all_constraint + self.preconditions))
+            input_of_solver += (Solver.convert_constraints_to_smt_format(generated_constraint, [], new_name))
+            input_of_solver += (Solver.convert_constraints_to_smt_format(all_constraint, self.preconditions))
             input_of_solver += '\n(check-sat)\n(get-unsat-core)\n'
             f = open(saving_path, "w")
             f.write(input_of_solver)

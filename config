@@ -1,16 +1,16 @@
 {
     "model_name": "farkas",
     "get_SAT": true,
-    "get_UNSAT": true,
-    "get_strict": true,
+    "get_UNSAT": false,
+    "get_strict": false,
     "max_d_of_SAT": 1,
     "max_d_of_UNSAT": 0,
     "max_d_of_strict": 0,
     "degree_of_generated_var": 0,
-    "solver_name": "mathsat",
+    "solver_name": "z3",
     "temp_path": "checking.txt",
     "solver_path": "default",
-    "core_iteration_heuristic": false,
+    "core_iteration_heuristic": true,
     "constant_heuristic": false,
     "real_values": true
 }

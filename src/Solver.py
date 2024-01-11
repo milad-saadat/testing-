@@ -87,7 +87,7 @@ class Solver:
                           )
 
     @staticmethod
-    def convert_constraints_to_smt_format(all_constraint: [DNF], names: [str] = None) -> str:
+    def convert_constraints_to_smt_format(all_constraint: [DNF], precondition, names: [str] = None) -> str:
         """ generate string for declaring constraint in smt format
 
         :param all_constraint: constraint that should be converted to smt format
@@ -101,6 +101,11 @@ class Solver:
             else:
                 smt_string = smt_string + f'(assert ( ! {constraint.convert_to_preorder()} :named {names[i]}))\n'
 
+        for constraint in precondition:
+            if len(constraint) == 1:
+                smt_string = smt_string + f'(assert  {constraint[0].convert_to_preorder()} )\n'
+            elif len(constraint) == 2:
+                smt_string = smt_string + f'(assert (=> {constraint[0].convert_to_preorder()} {constraint[1].convert_to_preorder()}))\n'
         return smt_string
 
     @staticmethod
