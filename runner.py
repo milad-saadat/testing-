@@ -17,7 +17,7 @@ with open(sys.argv[3], "r") as jsonfile:
 global model
 model = PositiveModel([],
                       data['model_name'],
-                      data['get_SAT'], data['get_UNSAT'], data['get_strict'],
+                      True, not data['SAT_heuristic'], not data['SAT_heuristic'],
                       data['max_d_of_SAT'], data['max_d_of_UNSAT'], data['max_d_of_strict'],
                       data['degree_of_generated_var']
                       )
@@ -299,7 +299,7 @@ else:
     exit(0)
 
 model.run_on_solver(temp_path=data["temp_path"], solver_name=data["solver_name"], solver_path=data["solver_path"],
-                    core_iteration_heuristic=data["core_iteration_heuristic"],
-                    constant_heuristic=data["constant_heuristic"],
+                    core_iteration_heuristic=data["unsat_core_heuristic"],
+                    constant_heuristic=False,
                     real_values=data["real_values"]
                     )
