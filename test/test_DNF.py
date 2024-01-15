@@ -7,7 +7,7 @@ from src.PositiveModel import *
 
 class MyTestCase(unittest.TestCase):
     def test_dnf_or(self):
-        model = PositiveModel(['c_1', 'c_2', 'c_3', 's_0'], [], model_name=Theorem.Farkas)
+        model = PositiveModel(['c_1', 'c_2', 'c_3', 's_0'], [], theorem_name=Theorem.Farkas)
         c1 = CoefficientConstraint(model.get_polynomial('c_1-2').monomials[0].coefficient, '<')
         c2 = CoefficientConstraint(model.get_polynomial('c_2+1').monomials[0].coefficient, '>=')
         c3 = CoefficientConstraint(model.get_polynomial('c_3-c_1').monomials[0].coefficient, '>=')
@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(str(dnf_res), str(dnf1 | dnf2))  # add assertion here
 
     def test_dnf_and(self):
-        model = PositiveModel(['c_1', 'c_2', 'c_3', 's_0'], [], model_name=Theorem.Farkas)
+        model = PositiveModel(['c_1', 'c_2', 'c_3', 's_0'], [], theorem_name=Theorem.Farkas)
         c1 = CoefficientConstraint(model.get_polynomial('c_1-2').monomials[0].coefficient, '<')
         c2 = CoefficientConstraint(model.get_polynomial('c_2+1').monomials[0].coefficient, '>=')
         c3 = CoefficientConstraint(model.get_polynomial('c_3-c_1').monomials[0].coefficient, '>=')
@@ -31,7 +31,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(dnf_res.convert_to_preorder(), (dnf1 & dnf2).convert_to_preorder())
 
     def test_dnf_neg(self):
-        model = PositiveModel(['c_1', 'c_2', 'c_3', 's_0'], [], model_name=Theorem.Farkas)
+        model = PositiveModel(['c_1', 'c_2', 'c_3', 's_0'], [], theorem_name=Theorem.Farkas)
         c1 = CoefficientConstraint(model.get_polynomial('c_1-2').monomials[0].coefficient, '<')
         c2 = CoefficientConstraint(model.get_polynomial('c_2+1').monomials[0].coefficient, '>=')
         c3 = CoefficientConstraint(model.get_polynomial('c_3-c_1').monomials[0].coefficient, '>=')

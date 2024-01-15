@@ -20,23 +20,23 @@ class PositiveModel:
         paired_constraint ([]): list of horn clause constraint as pair of left hand side and right han side.
         template_variables ([UnknownVariable]): list of unknown variable used as template variables.
         program_variables ([UnknownVariable]): list of unknown variable used as program variables.
-        model_name (str): name of the algorithm should be used to find the constraints.
+        theorem_name (str): name of the algorithm should be used to find the constraints.
 
         get_SAT (bool): should constraint for satisfactory added or not.
         get_UNSAT (bool): should constraint for unsatisfactory added or not.
         get_strict (bool): should constraint for unsatisfactory in strict form added or not.
 
-        max_d_of_SAT (int) : maximum degree of monoids when finding sat constraints in handelman or putinar.
-        max_d_of_UNSAT (int) : maximum degree of monoids when finding unsat constraints in handelman or putinar.
-        max_d_of_strict (int) : maximum degree of monoids when finding unsat constraints in strict case in handelman or putinar.
-        degree_of_generated_var (int) : degree of new variable that is generated for strict case in right hand side of equality in putinar.
+        degree_of_sat (int) : maximum degree of monoids when finding sat constraints in handelman or putinar.
+        degree_of_nonstrict_unsat (int) : maximum degree of monoids when finding unsat constraints in handelman or putinar.
+        degree_of_strict_unsat (int) : maximum degree of monoids when finding unsat constraints in strict case in handelman or putinar.
+        max_d_of_strict (int) : degree of new variable that is generated for strict case in right hand side of equality in putinar.
 
         preconditions ([DNF]) : list of conditions that must be satisfied independent of the horn clauses
     """
 
     def __init__(self, template_variables_name: [str],
-                 model_name: str, get_SAT: bool = True, get_UNSAT: bool = False, get_strict: bool = False,
-                 max_d_of_SAT: int = 0, max_d_of_UNSAT: int = 0, max_d_of_strict: int = 0, degree_of_generated_var: int = 0,
+                 theorem_name: str, get_SAT: bool = True, get_UNSAT: bool = False, get_strict: bool = False,
+                 degree_of_sat: int = 0, degree_of_nonstrict_unsat: int = 0, degree_of_strict_unsat: int = 0, max_d_of_strict: int = 0,
                  preconditions:[DNF] = []
                  ):
         self.paired_constraint = []
@@ -45,14 +45,14 @@ class PositiveModel:
         for name in template_variables_name:
             self.template_variables.append(UnknownVariable(name=name, type_of_var='template_var'))
 
-        self.model_name = model_name
+        self.theorem_name = theorem_name
         self.get_SAT = get_SAT
         self.get_UNSAT = get_UNSAT
         self.get_strict = get_strict
-        self.max_d_of_SAT = max_d_of_SAT
-        self.max_d_of_UNSAT = max_d_of_UNSAT
+        self.degree_of_sat = degree_of_sat
+        self.degree_of_nonstrict_unsat = degree_of_nonstrict_unsat
+        self.degree_of_strict_unsat = degree_of_strict_unsat
         self.max_d_of_strict = max_d_of_strict
-        self.degree_of_generated_var = degree_of_generated_var
         self.preconditions = preconditions
 
     def add_paired_constraint(self, lhs: DNF, rhs: DNF, program_variables):
@@ -99,16 +99,16 @@ class PositiveModel:
         """
         all_constraint = []
         for pair in self.paired_constraint:
-            if self.model_name == Theorem.Farkas:
+            if self.theorem_name == Theorem.Farkas:
                 model = Farkas(variables=pair[2], LHS=pair[0], RHS=pair[1])
-            elif self.model_name == Theorem.Handelman:
+            elif self.theorem_name == Theorem.Handelman:
                 model = Handelman(variables=pair[2], LHS=pair[0], RHS=pair[1],
-                                  max_d_for_sat=self.max_d_of_SAT, max_d_for_unsat=self.max_d_of_UNSAT)
-            elif self.model_name == Theorem.Putinar:
+                                  max_d_for_sat=self.degree_of_sat, max_d_for_unsat=self.degree_of_nonstrict_unsat)
+            elif self.theorem_name == Theorem.Putinar:
                 model = Putinar(variables=pair[2], LHS=pair[0], RHS=pair[1],
-                                max_d_for_sat=self.max_d_of_SAT, max_d_for_unsat=self.max_d_of_UNSAT,
-                                max_d_for_unsat_strict=self.max_d_of_strict,
-                                degree_for_new_var=self.degree_of_generated_var)
+                                max_d_for_sat=self.degree_of_sat, max_d_for_unsat=self.degree_of_nonstrict_unsat,
+                                max_d_for_unsat_strict=self.degree_of_strict_unsat,
+                                degree_for_new_var=self.max_d_of_strict)
             else:
                 print("no such model")
                 return
@@ -118,7 +118,7 @@ class PositiveModel:
             if self.get_UNSAT:
                 new_dnf.append(model.get_UNSAT_constraint(need_strict=False))
             if self.get_strict:
-                if self.model_name == 'putinar':
+                if self.theorem_name == 'putinar':
                     for constraint in model.get_UNSAT_constraint(need_strict=True):
                         new_dnf.append(constraint)
                 else:

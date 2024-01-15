@@ -18,9 +18,9 @@ def run_on_file(file_path: str, solver_name: str):
     f = open(file_path, "r")
     file_input = f.read().split('\n')
     model = PositiveModel(file_input[1][file_input[1].find(':') + 1:-2].split(),
-                          file_input[0][file_input[0].find(':') + 1:-2].split(), model_name='putinar',
+                          file_input[0][file_input[0].find(':') + 1:-2].split(), theorem_name='putinar',
                           get_UNSAT=False, get_strict=False,
-                          max_d_of_SAT=2, max_d_of_UNSAT=2, max_d_of_strict=2, degree_of_generated_var=2)
+                          degree_of_sat=2, degree_of_nonstrict_unsat=2, degree_of_strict_unsat=2, max_d_of_strict=2)
     i = 4
     while i < len(file_input):
 

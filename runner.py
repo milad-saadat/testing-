@@ -1,25 +1,42 @@
 import json
 import sys
 
-from src.Polynomial import Polynomial
-from lark import Lark
-import lark
-from src.UnknownVariable import UnknownVariable
-from src.Solver import Solver
-from src.Polynomial import Monomial
-from src.Convertor import *
 from src.PositiveModel import *
 
 with open(sys.argv[3], "r") as jsonfile:
     data = json.load(jsonfile)
 
+sat_heuristic = False
+if 'SAT_heuristic' in data.keys():
+    sat_heuristic = data['SAT_heuristic']
+
+degree_of_sat = 0
+if 'degree_of_sat' in data.keys():
+    degree_of_sat = data['degree_of_sat']
+
+degree_of_nonstrict_unsat = 0
+if 'degree_of_nonstrict_unsat' in data.keys():
+    degree_of_nonstrict_unsat = data['degree_of_nonstrict_unsat']
+
+
+degree_of_strict_unsat = 0
+if 'degree_of_strict_unsat' in data.keys():
+    degree_of_strict_unsat = data['degree_of_strict_unsat']
+
+max_d_of_strict = 0
+if 'max_d_of_strict' in data.keys():
+    max_d_of_strict = data['max_d_of_strict']
+
+unsat_core_heuristic = False
+if 'unsat_core_heuristic' in data.keys():
+    unsat_core_heuristic = data['unsat_core_heuristic']
 
 global model
 model = PositiveModel([],
-                      data['model_name'],
-                      True, not data['SAT_heuristic'], not data['SAT_heuristic'],
-                      data['max_d_of_SAT'], data['max_d_of_UNSAT'], data['max_d_of_strict'],
-                      data['degree_of_generated_var']
+                      data['theorem_name'],
+                      True, not sat_heuristic, not sat_heuristic,
+                      degree_of_sat, degree_of_nonstrict_unsat, degree_of_strict_unsat,
+                      max_d_of_strict
                       )
 
 def traverse_readable_tree(parse_tree):
@@ -299,7 +316,7 @@ else:
     exit(0)
 
 model.run_on_solver(temp_path=data["temp_path"], solver_name=data["solver_name"], solver_path=data["solver_path"],
-                    core_iteration_heuristic=data["unsat_core_heuristic"],
+                    core_iteration_heuristic=unsat_core_heuristic,
                     constant_heuristic=False,
                     real_values=data["real_values"]
                     )
