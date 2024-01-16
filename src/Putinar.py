@@ -1,5 +1,3 @@
-import math
-
 from src.Constraint import PolynomialConstraint
 from src.Solver import Solver
 from src.Polynomial import Polynomial
@@ -35,7 +33,7 @@ class Putinar:
         """this function generates a lower triangular matrix L with positive elements in diagonal and returns L * L^T
 
         :param dim: The dimension of the generated matrix
-        :return: a positive semideinite matrix with corresponding constraints.
+        :return: a positive semidefinite matrix with corresponding constraints.
         """
         matrix = np.array(
             [[Polynomial(self.variables, []) for __ in range(dim)] for _ in range(dim)]
@@ -50,7 +48,7 @@ class Putinar:
         return np.matmul(matrix, matrix.T), constraints
 
     @staticmethod
-    def get_monoids(variables, max_d:int) -> [Polynomial]:
+    def get_monoids(variables, max_d: int) -> [Polynomial]:
         """ This function gives the monoid of a maximum degree on set of variables.
 
         :param variables: the set of variable
@@ -70,7 +68,7 @@ class Putinar:
 
         return all_monoid
 
-    def get_sum_of_square(self, max_d:int) -> (Polynomial, [CoefficientConstraint]):
+    def get_sum_of_square(self, max_d: int) -> (Polynomial, [CoefficientConstraint]):
         """ the function generate a new sum-of-square template on set of class variable and given maximum degree
 
         :param max_d: maximum degree of the generated template
@@ -82,14 +80,14 @@ class Putinar:
         monomials = []
         for i, monomial in enumerate(poly_with_more_degree.monomials):
             new_poly = Solver.get_variable_polynomial(self.variables, f't_{i}', 'eta_generated_for_sum_of_square') \
-                 * Solver.get_degree_polynomial(self.variables, monomial.degrees)
+                       * Solver.get_degree_polynomial(self.variables, monomial.degrees)
             constraint.append(
                 CoefficientConstraint(new_poly.monomials[0].coefficient - monomial.coefficient, '=')
             )
             monomials.append(new_poly.monomials[0])
         return Polynomial(poly_with_more_degree.variables, monomials), constraint
 
-    def get_poly_sum(self, max_d:int) -> (Polynomial, [CoefficientConstraint]):
+    def get_poly_sum(self, max_d: int) -> (Polynomial, [CoefficientConstraint]):
         """ This function returns a polynomial y_0(rhs is struct) + h_0 + h_1*g_1 ... + h_n*g_n where h_i are
         sum-of-square polynomial and g_i are left hand side polynomials
 
@@ -133,9 +131,9 @@ class Putinar:
         polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_unsat)
         return constraints + Solver.find_equality_constraint(polynomial_of_sum,
                                                              Solver.get_constant_polynomial(
-                                                                self.RHS.polynomial.variables, '-1'))
+                                                                 self.RHS.polynomial.variables, '-1'))
 
-    def handel_strict(self, max_d:int, power_of_new_var:int) -> [[CoefficientConstraint]]:
+    def handel_strict(self, max_d: int, power_of_new_var: int) -> [[CoefficientConstraint]]:
         """ it handles the second form of unsatisfiablity
 
         :param max_d: maximum degree for template polynomials
@@ -172,7 +170,7 @@ class Putinar:
         return all_constraints
 
     @staticmethod
-    def get_general_template(all_variables:[UnknownVariable], all_monoids:[Polynomial]) -> [Polynomial]:
+    def get_general_template(all_variables: [UnknownVariable], all_monoids: [Polynomial]) -> [Polynomial]:
         """ generate a new variable for every monoid and multiply it and return the sum of all.
 
         :param all_variables: variable of the polynomials
@@ -180,6 +178,7 @@ class Putinar:
         :return: A polynomial of the sum of all monoid multiplied by new variable
         """
         new_unknown_variables = [
-            Solver.get_variable_polynomial(all_variables, name=f'eta{i + 1}', type_of_var='generated_for_template_poly_strict')
+            Solver.get_variable_polynomial(all_variables, name=f'eta{i + 1}',
+                                           type_of_var='generated_for_template_poly_strict')
             for i in range(len(all_monoids))]
         return np.matmul(np.array(new_unknown_variables).reshape(1, -1), np.array(all_monoids).reshape(-1, 1))[0][0]

@@ -1,4 +1,3 @@
-# from src.Element import Element
 import numpy as np
 from src.UnknownVariable import UnknownVariable
 from fractions import Fraction
@@ -14,6 +13,7 @@ class Element:
             variables ([UnknownVariable]): The sorted list of variables that should be multiplied together
 
     """
+
     def __init__(self, constant, variables: [UnknownVariable] = []):
         self.constant = Fraction(constant)
         variables.sort()
@@ -90,7 +90,7 @@ class Element:
         """
         if self.constant == 0:
             return '0'
-        if self.constant.denominator == 1 :
+        if self.constant.denominator == 1:
             preorder = str(self.constant.numerator)
             if self.constant < 0:
                 preorder = f'(- {-self.constant.numerator})'
@@ -116,6 +116,7 @@ class Coefficient:
                 elements ([Element]): The sorted list of elements that should be added together
 
         """
+
     def __init__(self, elements: [Element] = []):
         elements.sort()
         self.elements = elements

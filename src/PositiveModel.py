@@ -8,7 +8,6 @@ from src.Constant import *
 from src.Convertor import *
 from src.DNF import *
 from src.Coefficient import *
-from src.gurobi import *
 
 
 class PositiveModel:
@@ -17,7 +16,7 @@ class PositiveModel:
 
 
     Attributes:
-        paired_constraint ([]): list of horn clause constraint as pair of left hand side and right han side.
+        paired_constraint ([]): list of horn clause constraint as list of pair of left hand side and right hand side with their variable.
         template_variables ([UnknownVariable]): list of unknown variable used as template variables.
         program_variables ([UnknownVariable]): list of unknown variable used as program variables.
         theorem_name (str): name of the algorithm should be used to find the constraints.
@@ -36,8 +35,9 @@ class PositiveModel:
 
     def __init__(self, template_variables_name: [str],
                  theorem_name: str, get_SAT: bool = True, get_UNSAT: bool = False, get_strict: bool = False,
-                 degree_of_sat: int = 0, degree_of_nonstrict_unsat: int = 0, degree_of_strict_unsat: int = 0, max_d_of_strict: int = 0,
-                 preconditions:[DNF] = []
+                 degree_of_sat: int = 0, degree_of_nonstrict_unsat: int = 0, degree_of_strict_unsat: int = 0,
+                 max_d_of_strict: int = 0,
+                 preconditions: [DNF] = []
                  ):
         self.paired_constraint = []
         self.template_variables = []
@@ -60,7 +60,7 @@ class PositiveModel:
 
         :param lhs: DNF form of the left hand side of that should be added.
         :param rhs: DNF form of the right hand side of that should be added.
-
+        :param program_variables: program_variable used in lhs and rhs
         """
         if len(rhs.literals) > 1:
             lhs = lhs & (-(DNF(rhs.literals[1:])))
@@ -83,7 +83,7 @@ class PositiveModel:
             res += '----------------------\n'
         return res
 
-    def get_polynomial(self, poly_str:str, program_variables) -> Polynomial:
+    def get_polynomial(self, poly_str: str, program_variables) -> Polynomial:
         """ generate a polynomial from a given string based on the template and program variable in the class
 
         :param poly_str: input string that should be converted to a polynomial.
@@ -126,7 +126,8 @@ class PositiveModel:
             all_constraint.append(DNF(new_dnf))
         return all_constraint
 
-    def create_smt_file(self, temp_path: str = "checking.txt", solver_name: str = 'default',solver_path: str = "default",
+    def create_smt_file(self, temp_path: str = "checking.txt", solver_name: str = 'default',
+                        solver_path: str = "default",
                         core_iteration_heuristic: bool = False,
                         constant_heuristic: bool = False, real_values: bool = True):
         all_constraint = self.get_generated_constraints()
@@ -155,11 +156,14 @@ class PositiveModel:
                 Solver.convert_constraints_to_smt_format(all_constraint, self.preconditions) + output_command
                 )
         f.close()
-    def run_on_solver(self,temp_path:str="checking.txt", solver_name: str = 'z3', solver_path: str = "default", core_iteration_heuristic: bool = False,
+
+    def run_on_solver(self, temp_path: str = "checking.txt", solver_name: str = 'z3', solver_path: str = "default",
+                      core_iteration_heuristic: bool = False,
                       constant_heuristic: bool = False, real_values: bool = True
-                      ) -> (bool,dict):
+                      ) -> (bool, dict):
         """ This function find the constraints for the clauses and run a solver with given configuration and find values for the template variables.
 
+        :param temp_path: a temporary path to save created smt file
         :param solver_name: name of the solver.
         :param solver_path: a path to solver file if it is None it uses the default path.
         :param core_iteration_heuristic: a boolean that determines the core iteration heuristic should be applied or not.
@@ -167,22 +171,14 @@ class PositiveModel:
         :param real_values: a boolean that determines if the variables should be integer or real value.
         :return: a boolean that is true if it  is satisfiable and a dictionary from template variable to their value.
         """
-        if solver_name == 'gurobi':
-            all_constraint = self.get_generated_constraints()
-            gurobi_res = check_constraints(all_constraint)
-            result_dictionary = {}
-            for var in gurobi_res.key():
-                if var in self.template_variables:
-                    result_dictionary[var] = gurobi_res[var]
-            return result_dictionary
 
         if solver_path == "default":
             solver_path = Constant.default_path[solver_name]
 
-        self.create_smt_file(temp_path, solver_name, solver_path, core_iteration_heuristic, constant_heuristic, real_values)
+        self.create_smt_file(temp_path, solver_name, solver_path, core_iteration_heuristic, constant_heuristic,
+                             real_values)
         output = subprocess.getoutput(f'{solver_path} {Constant.command[solver_name]} {temp_path}')
         is_sat = output.split('\n')[0]
-
 
         values = '\n'.join(output.split('\n')[1:])[1:-1].strip()
         print(output)
@@ -213,7 +209,7 @@ class PositiveModel:
         """ given a list of constraints find a constraint that is in form "template variable" = "constant"
 
         :param all_constraint: list of the constraints
-        :return: a equality constraint.
+        :return: an equality constraint.
         """
         for dnf in all_constraint:
             for literal in dnf.literals:

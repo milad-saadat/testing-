@@ -1,12 +1,11 @@
-import sys 
+import sys
 import os
 
-name= sys.argv[1]  #os.path.basename(sys.argv[1])
-theorem=sys.argv[2]     # farkas, putinar, handelman
-degree = sys.argv[3]    # degree 
-solver = sys.argv[4]    # z3, mathsat
-real = sys.argv[5]      # true/false
-
+name = sys.argv[1]  # os.path.basename(sys.argv[1])
+theorem = sys.argv[2]  # farkas, putinar, handelman
+degree = sys.argv[3]  # degree
+solver = sys.argv[4]  # z3, mathsat
+real = sys.argv[5]  # true/false
 
 print(f"""
 {{

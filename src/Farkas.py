@@ -4,6 +4,7 @@ from src.Polynomial import Polynomial
 from src.Constraint import CoefficientConstraint
 from src.UnknownVariable import UnknownVariable
 
+
 class Farkas:
     """ A class that performs farkas algorithm.
 

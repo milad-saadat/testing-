@@ -1,6 +1,3 @@
-from enum import Enum
-
-
 class Theorem:
     Farkas = 'farkas'
     Handelman = 'handelman'

@@ -9,7 +9,7 @@ from src.Polynomial import Monomial
 def find_index_of_variable(name: str, all_variable: [UnknownVariable]) -> int:
     """ returns the index of a variable in a list.
 
-    :param name: name of the variable that should be find.
+    :param name: name of the variable that should be found.
     :param all_variable: list of all variables.
     :return: index of the variable.
     """

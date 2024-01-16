@@ -1,6 +1,7 @@
 from src.Constraint import CoefficientConstraint
-from src.Parser import *
 from src.DNF import DNF
+from src.Polynomial import *
+from src.Coefficient import *
 
 
 class Solver:
@@ -34,7 +35,7 @@ class Solver:
         return all_constraint
 
     @staticmethod
-    def get_constant_polynomial(variables : [UnknownVariable], constant) -> Polynomial:
+    def get_constant_polynomial(variables: [UnknownVariable], constant) -> Polynomial:
         """generate new polynomial with one monomial and a constant as its coefficient
 
                 :param variables: polynomial variables
@@ -91,6 +92,7 @@ class Solver:
         """ generate string for declaring constraint in smt format
 
         :param all_constraint: constraint that should be converted to smt format
+        :param precondition: list of preconditions
         :param names: list of name for each constraint
         :return: smt string format of constraints
         """
@@ -109,7 +111,8 @@ class Solver:
         return smt_string
 
     @staticmethod
-    def smt_declare_variable_phase(all_constraint: [DNF], real: bool = True, pre_variables: [UnknownVariable] = []) -> str:
+    def smt_declare_variable_phase(all_constraint: [DNF], real: bool = True,
+                                   pre_variables: [UnknownVariable] = []) -> str:
         """ generate string format for declaring the variables in smt format
 
         :param all_constraint: constraint that their variable should be generated

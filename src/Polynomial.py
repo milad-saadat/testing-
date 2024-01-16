@@ -31,7 +31,7 @@ class Monomial:
 
     def __mul__(self, other):
         """ multiply two Monomial\n the result is a Monomial which the degree of each variable is sum of degrees in
-        multiplicands and the coefficient is the multiply of the two coefficient in multiplicands.
+        multiplicands and the coefficient is the multiplication of the two coefficient in multiplicands.
 
                 :param other (Monomial): the other Monomial that should be multiplied
                 :return: new Monomial that is the result of multiplication of two Coefficient
@@ -85,7 +85,7 @@ class Monomial:
 
         for i, var in enumerate(self.variables):
             for _ in range(self.degrees[i]):
-                preorder +=  str(var)
+                preorder += str(var)
         preorder += ' )'
         return preorder
 
@@ -154,7 +154,7 @@ class Polynomial:
 
     def __mul__(self, other):
         """ multiply two Polynomial\n the result is a Polynomial which consist Monomials that are equal to the
-            multiply of two Monomial from each Polynomial. numpy is used for that.
+            multiplication of two Monomial from each Polynomial. numpy is used for that.
 
             :param other: the other Polynomial that should be multiplied
             :return: new Polynomial that is multiplied of two Polynomial
@@ -217,6 +217,6 @@ class Polynomial:
             return self.monomials[0].convert_to_preorder()
         preorder = '( + 0 '
         for i in range(0, len(self.monomials)):
-            preorder +=  self.monomials[i].convert_to_preorder() + ' '
+            preorder += self.monomials[i].convert_to_preorder() + ' '
         preorder += ' )'
         return preorder

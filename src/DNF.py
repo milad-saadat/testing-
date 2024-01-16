@@ -4,7 +4,8 @@ class DNF:
         Attributes:
             literals ([]): list of elements that the or of these elements form the DNF.
     """
-    def __init__(self, literals:[]):
+
+    def __init__(self, literals: []):
         self.literals = literals
 
     def __or__(self, other):
